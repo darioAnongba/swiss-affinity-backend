@@ -1,0 +1,34 @@
+admin_area:
+    resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
+    prefix: /admin
+
+_sonata_admin:
+    resource: .
+    type: sonata_admin
+    prefix: /admin
+
+app:
+    resource: "@AppBundle/Controller/"
+    type:     annotation
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"
+
+NelmioApiDocBundle:
+    resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
+    prefix:   /api/doc
+
+rest_events:
+    type: rest
+    prefix: /api
+    resource: AppBundle\Controller\EventController
+
+rest_users:
+    type: rest
+    prefix: /api
+    resource: AppBundle\Controller\UserController
+
+rest_registrations:
+    type: rest
+    prefix: /api
+    resource: AppBundle\Controller\RegistrationController
