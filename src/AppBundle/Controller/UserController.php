@@ -74,9 +74,6 @@ class UserController extends FOSRestController
         }
 
         $view = new View($user);
-        $group = $this->container->get('security.context')->isGranted('ROLE_API') ? 'restapi' : 'standard';
-        $view->getSerializationContext()->setGroups(array('Default', $group));
-
         return $view;
     }
 
@@ -150,7 +147,7 @@ class UserController extends FOSRestController
      *   resource = true,
      *   statusCodes={
      *     200 = "Returned when successful",
-     *     404 = "Returned when the note is not found"
+     *     404 = "Returned when the user is not found"
      *   }
      * )
      *
@@ -182,7 +179,7 @@ class UserController extends FOSRestController
      *
      * @ApiDoc(
      *   resource = true,
-     *   input = "AppBundle\Form\RegistrationType",
+     *   input = "AppBundle\Form\ProfileFormType",
      *   statusCodes = {
      *     204 = "Returned when successful",
      *     400 = "Returned when the form has errors"
@@ -246,5 +243,33 @@ class UserController extends FOSRestController
         $userManager->deleteUser($user);
 
         return $this->routeRedirectView('get_users', array(), Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * List all locations of a User.
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   statusCodes={
+     *     200 = "Returned when successful",
+     *     404 = "Returned when the user is not found"
+     *   }
+     * )
+     *
+     * @Annotations\View(templateVar="locations")
+     *
+     * @param integer $username   The user's username
+     * @return array
+     *
+     * @throws NotFoundHttpException when user not exist
+     */
+    public function getUserLocationsAction($username)
+    {
+        $user = $this->get('fos_user.user_manager')->findUserByUsername($username);
+
+        if(null === $user) throw $this->createNotFoundException("User not found");
+
+        $view = new View($user->getLocationsOfInterest());
+        return $view;
     }
 }
