@@ -44,36 +44,4 @@ class LocationController extends FOSRestController
 
         return $locations;
     }
-
-    /**
-     * Get a single event.
-     *
-     * @ApiDoc(
-     *   output="AppBundle\Entity\Event",
-     *   statusCodes = {
-     *     200 = "Returned when successful",
-     *     404 = "Returned when the event is not found"
-     *   }
-     * )
-     *
-     * @Annotations\View(templateVar="event")
-     *
-     * @param int $id The event id
-     *
-     * @return array
-     *
-     * @throws NotFoundHttpException when the event does not exist
-     */
-    public function getEventAction($id)
-    {
-        $event = $this->getDoctrine()->getRepository('AppBundle:Event')->find($id);
-
-        if (null === $event) {
-            throw $this->createNotFoundException("Event does not exist.");
-        }
-
-        $view = new View($event);
-
-        return $view;
-    }
 }
