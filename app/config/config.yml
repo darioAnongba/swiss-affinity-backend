@@ -144,15 +144,27 @@ sonata_admin:
 vich_uploader:
     db_driver: orm
     mappings:
+        establishment_logo:
+            uri_prefix:         /images/establishments/logos
+            upload_destination: %kernel.root_dir%/../web/images/establishments/logos
+            inject_on_load:     false
+            delete_on_update:   true
+            delete_on_remove:   true
+            namer:
+                service: vich_uploader.namer_uniqid
         user_image:
             uri_prefix:         /images/users
             upload_destination: %kernel.root_dir%/../web/images/users
             inject_on_load:     false
             delete_on_update:   true
             delete_on_remove:   true
+            namer:
+                service: vich_uploader.namer_uniqid
         event_image:
             uri_prefix:         /images/events
             upload_destination: %kernel.root_dir%/../web/images/events
             inject_on_load:     false
             delete_on_update:   true
             delete_on_remove:   true
+            namer:
+                service: vich_uploader.namer_uniqid

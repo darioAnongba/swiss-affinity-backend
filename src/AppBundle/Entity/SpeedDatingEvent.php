@@ -6,12 +6,14 @@ use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 /**
  * Class representig an event in general
  *
  * @ORM\Entity()
- * @ORM\Table(name="speed_dating_events")
  *
+ * @Vich\Uploadable
  */
 class SpeedDatingEvent extends Event
 {

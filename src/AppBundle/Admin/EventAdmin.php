@@ -27,49 +27,54 @@ class EventAdmin extends Admin
 
     protected function configureFormFields(FormMapper $formMapper)
     {
-        $formMapper->add('name')
-            ->add('location', 'entity', array(
-                'class' => 'AppBundle\Entity\Location',
-                'property' => 'name'
-            ))
-            ->add('maxPeople')
-            ->add('dateStart', 'datetime', array(
-                'date_widget' => 'single_text',
-                'time_widget' => 'single_text'
-            ))
-            ->add('dateEnd', 'datetime', array(
-                'date_widget' => 'single_text',
-                'time_widget' => 'single_text'
-            ))
-            ->add('basePrice')
-            ->add('animators', 'entity', array(
-                'class' => 'AppBundle\Entity\User',
-                'property' => 'fullName',
-                'multiple' => true
-            ))
-            ->add('description')
-            ->add('imageFile', 'vich_image', array(
-                'required' => false,
-                'allow_delete' => true,
-                'download_link' => false,
-            ));
+        $formMapper
+            ->with('Details', array('class' => 'col-md-4'))
+                ->add('name')
+                ->add('location', 'entity', array(
+                    'class' => 'AppBundle\Entity\Location',
+                    'property' => 'name'
+                ))
+                ->add('dateStart', 'datetime', array(
+                    'date_widget' => 'single_text',
+                    'time_widget' => 'single_text'
+                ))
+                ->add('dateEnd', 'datetime', array(
+                    'date_widget' => 'single_text',
+                    'time_widget' => 'single_text'
+                ))
+                ->add('basePrice')
+            ->end()
+            ->with('Details 2', array('class' => 'col-md-4'))
+                ->add('animators', 'entity', array(
+                    'class' => 'AppBundle\Entity\User',
+                    'property' => 'fullName',
+                    'multiple' => true
+                ))
+                ->add('imageFile', 'vich_image', array(
+                    'required' => false,
+                    'allow_delete' => true,
+                    'download_link' => false,
+                ))
+            ->end()
+            ->with('Description')
+                ->add('description', null, array(
+                    'attr' => array('rows' => '10')
+                ))
+            ->end();
     }
 
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
-        $datagridMapper->add('name')
-            ->add('location', null, array(), 'entity', array(
-                'class' => 'AppBundle\Entity\Location',
-                'property' => 'name'
-            ))
-            ->add('dateStart')
+        $datagridMapper
+            ->add('name')
+            ->add('location')
             ->add('animators', null, array(), 'entity', array(
-                'class' => 'AppBundle\Entity\User',
                 'property' => 'fullName'
             ))
             ->add('state', null, array(), 'choice', array(
                 'choices' => Event::getStates(),
-            ));
+            ))
+            ->add('establishment');
     }
 
     protected function configureListFields(ListMapper $listMapper)

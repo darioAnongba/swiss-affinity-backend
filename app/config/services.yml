@@ -13,23 +13,28 @@ services:
             tags:
                 - { name: form.type, alias: app_user_profile }
 
-    admin.event:
-          class: AppBundle\Admin\EventAdmin
-          arguments: [~, AppBundle\Entity\Event, ~]
+    admin.speed_dating_event:
+          class: AppBundle\Admin\SpeedDatingEventAdmin
+          arguments: [~, AppBundle\Entity\SpeedDatingEvent, ~]
           tags:
-              - { name: sonata.admin, manager_type: orm, group: Events, label: Events }
+              - { name: sonata.admin, manager_type: orm, group: Events, label: Speed Dating Events }
     admin.location:
           class: AppBundle\Admin\LocationAdmin
           arguments: [~, AppBundle\Entity\Location, ~]
           tags:
               - { name: sonata.admin, manager_type: orm, group: Events, label: Locations }
+    admin.establishment:
+          class: AppBundle\Admin\EstablishmentAdmin
+          arguments: [~, AppBundle\Entity\Establishment, ~]
+          tags:
+              - { name: sonata.admin, manager_type: orm, group: Events, label: Establishments }
 
     admin.user:
           class: AppBundle\Admin\UserAdmin
           arguments: [~, AppBundle\Entity\User, ~]
           tags:
               - { name: sonata.admin, manager_type: orm, group: Users, label: Users }
-    admin.category:
+    admin.user_category:
           class: AppBundle\Admin\UserCategoryAdmin
           arguments: [~, AppBundle\Entity\UserCategory, ~]
           tags:
