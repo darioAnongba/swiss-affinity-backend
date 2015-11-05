@@ -108,6 +108,13 @@ class Establishment
     private $updatedAt;
 
     /**
+     * @var Address
+     *
+     * @ORM\ManyToOne(targetEntity="Location")
+     */
+    private $location;
+
+    /**
      * Set logoPath
      *
      * @param string $logoPath
@@ -174,7 +181,7 @@ class Establishment
     /**
      * @return File
      */
-    public function getImageFile()
+    public function getLogoFile()
     {
         return $this->logoFile;
     }
@@ -364,5 +371,34 @@ class Establishment
     public function getAddress()
     {
         return $this->address;
+    }
+
+    /**
+     * Set location
+     *
+     * @param \AppBundle\Entity\Location $location
+     *
+     * @return Establishment
+     */
+    public function setLocation(Location $location = null)
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * Get location
+     *
+     * @return \AppBundle\Entity\Location
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 }

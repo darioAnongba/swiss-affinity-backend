@@ -6,12 +6,14 @@ use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 /**
  * Class representig an event in general
  *
  * @ORM\Entity()
- * @ORM\Table(name="speed_dating_events")
  *
+ * @Vich\Uploadable
  */
 class SpeedDatingEvent extends Event
 {
@@ -19,6 +21,7 @@ class SpeedDatingEvent extends Event
      * @var integer
      *
      * @ORM\Column(name="men_seats", type="integer")
+     * @Assert\NotBlank()
      */
     private $menSeats;
 
@@ -26,6 +29,7 @@ class SpeedDatingEvent extends Event
      * @var integer
      *
      * @ORM\Column(name="women_seats", type="integer")
+     * @Assert\NotBlank()
      */
     private $womenSeats;
 
@@ -33,6 +37,7 @@ class SpeedDatingEvent extends Event
      * @var integer
      *
      * @ORM\Column(name="num_men_registered", type="integer")
+     * @Assert\NotBlank()
      */
     private $numMenRegistered;
 
@@ -40,6 +45,7 @@ class SpeedDatingEvent extends Event
      * @var integer
      *
      * @ORM\Column(name="num_women_registered", type="integer")
+     * @Assert\NotBlank()
      */
     private $numWomenRegistered;
 
@@ -47,6 +53,7 @@ class SpeedDatingEvent extends Event
      * @var integer
      *
      * @ORM\Column(name="min_age", type="integer")
+     * @Assert\NotBlank()
      */
     private $minAge;
 
@@ -54,6 +61,7 @@ class SpeedDatingEvent extends Event
      * @var integer
      *
      * @ORM\Column(name="max_age", type="integer")
+     * @Assert\NotBlank()
      */
     private $maxAge;
 
@@ -70,6 +78,9 @@ class SpeedDatingEvent extends Event
     public function __construct()
     {
         parent::__construct();
+
+        $this->numMenRegistered = 0;
+        $this->numWomenRegistered = 0;
     }
 
     /**

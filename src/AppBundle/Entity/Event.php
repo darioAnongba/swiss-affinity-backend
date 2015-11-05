@@ -310,7 +310,7 @@ abstract class Event
     }
 
     public static function getStates() {
-        return array('pending', 'confirmed', 'cancelled');
+        return array('pending' => 'Pending', 'confirmed' => 'Confirmed', 'cancelled' => 'Cancelled');
     }
 
     /**

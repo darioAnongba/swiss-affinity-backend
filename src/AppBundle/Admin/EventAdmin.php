@@ -21,7 +21,14 @@ class EventAdmin extends Admin
     {
         $showMapper
             ->with('Données', array('class' => 'col-md-4'))
-                ->add('imagePath')
+                ->add('name')
+                ->add('dateStart')
+                ->add('dateEnd')
+                ->add('Location')
+                ->add('establishment')
+                ->add('basePrice')
+                ->add('description')
+                ->add('animators')
             ->end();
     }
 

@@ -108,6 +108,13 @@ class Establishment
     private $updatedAt;
 
     /**
+     * @var Address
+     *
+     * @ORM\ManyToOne(targetEntity="Location")
+     */
+    private $location;
+
+    /**
      * Set logoPath
      *
      * @param string $logoPath
@@ -177,5 +184,192 @@ class Establishment
     public function getImageFile()
     {
         return $this->logoFile;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Establishment
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set phoneNumber
+     *
+     * @param string $phoneNumber
+     *
+     * @return Establishment
+     */
+    public function setPhoneNumber($phoneNumber)
+    {
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get phoneNumber
+     *
+     * @return string
+     */
+    public function getPhoneNumber()
+    {
+        return $this->phoneNumber;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return Establishment
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Get list of possible types
+     *
+     * @return array
+     */
+    public static function getTypes() {
+        return array('bar' => 'Bar', 'restaurant' => 'Restaurant', 'hotel' => 'Hôtel');
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Establishment
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set url
+     *
+     * @param string $url
+     *
+     * @return Establishment
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * Get url
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set maxSeats
+     *
+     * @param integer $maxSeats
+     *
+     * @return Establishment
+     */
+    public function setMaxSeats($maxSeats)
+    {
+        $this->maxSeats = $maxSeats;
+
+        return $this;
+    }
+
+    /**
+     * Get maxSeats
+     *
+     * @return integer
+     */
+    public function getMaxSeats()
+    {
+        return $this->maxSeats;
+    }
+
+    /**
+     * Set address
+     *
+     * @param \AppBundle\Entity\Address $address
+     *
+     * @return Establishment
+     */
+    public function setAddress(Address $address = null)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return \AppBundle\Entity\Address
+     */
+    public function getAddress()
+    {
+        return $this->address;
     }
 }
