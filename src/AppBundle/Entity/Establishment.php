@@ -1,0 +1,368 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Validator\Constraints as Assert;
+
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
+/**
+ * Establishment
+ *
+ * @ORM\Table(name="establishments")
+ * @ORM\Entity()
+ *
+ * @Vich\Uploadable
+ */
+class Establishment
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     */
+    private $id;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
+     * @Assert\NotBlank(message="Nom invalide : vide")
+     */
+    private $name;
+
+    /**
+     * @var Address
+     *
+     * @ORM\OneToOne(targetEntity="Address", cascade={"persist", "remove"})
+     */
+    private $address;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="phone_number", type="string", length=255)
+     * @Assert\Regex(
+     *        message="Téléphone invalide",
+     *        pattern="/^[+0-9\s]{10,18}/")
+     */
+    private $phoneNumber;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="type", type="string", length=255)
+     * @Assert\Choice(
+     *      choices={"bar", "restaurant", "hotel"},
+     *      message = "Choisissez un type valide.")
+     */
+    private $type;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="description", type="text", length=255, nullable=true)
+     */
+    private $description;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="url", type="string", length=255, nullable=true)
+     * @Assert\Url()
+     */
+    private $url;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="max_seats", type="integer", nullable=true)
+     */
+    private $maxSeats;
+
+    /**
+     * @Vich\UploadableField(mapping="establishment_logo", fileNameProperty="logoPath")
+     *
+     * @var File
+     */
+    private $logoFile;
+
+    /**
+     * @ORM\Column(name="logo_path", type="string", length=255, nullable=true)
+     *
+     * @var string
+     */
+    private $logoPath;
+
+    /**
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     * @Assert\DateTime()
+     *
+     * @var \DateTime
+     */
+    private $updatedAt;
+
+    /**
+     * Set logoPath
+     *
+     * @param string $logoPath
+     *
+     * @return Establishment
+     */
+    public function setLogoPath($logoPath)
+    {
+        $this->logoPath = $logoPath;
+
+        return $this;
+    }
+
+    /**
+     * Get logoPath
+     *
+     * @return string
+     */
+    public function getLogoPath()
+    {
+        return $this->logoPath;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime
+     *
+     * @ORM\PreUpdate()
+     */
+    public function setUpdatedAt()
+    {
+        $this->updatedAt = new \DateTime("now");
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the  update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
+     */
+    public function setLogoFile(File $image = null)
+    {
+        $this->logoFile = $image;
+
+        if ($image) {
+            $this->updatedAt = new \DateTime('now');
+        }
+    }
+
+    /**
+     * @return File
+     */
+    public function getImageFile()
+    {
+        return $this->logoFile;
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return Establishment
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set phoneNumber
+     *
+     * @param string $phoneNumber
+     *
+     * @return Establishment
+     */
+    public function setPhoneNumber($phoneNumber)
+    {
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    /**
+     * Get phoneNumber
+     *
+     * @return string
+     */
+    public function getPhoneNumber()
+    {
+        return $this->phoneNumber;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return Establishment
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Get list of possible types
+     *
+     * @return array
+     */
+    public static function getTypes() {
+        return array('bar' => 'Bar', 'restaurant' => 'Restaurant', 'hotel' => 'Hôtel');
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     *
+     * @return Establishment
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Set url
+     *
+     * @param string $url
+     *
+     * @return Establishment
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * Get url
+     *
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * Set maxSeats
+     *
+     * @param integer $maxSeats
+     *
+     * @return Establishment
+     */
+    public function setMaxSeats($maxSeats)
+    {
+        $this->maxSeats = $maxSeats;
+
+        return $this;
+    }
+
+    /**
+     * Get maxSeats
+     *
+     * @return integer
+     */
+    public function getMaxSeats()
+    {
+        return $this->maxSeats;
+    }
+
+    /**
+     * Set address
+     *
+     * @param \AppBundle\Entity\Address $address
+     *
+     * @return Establishment
+     */
+    public function setAddress(Address $address = null)
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * Get address
+     *
+     * @return \AppBundle\Entity\Address
+     */
+    public function getAddress()
+    {
+        return $this->address;
+    }
+}

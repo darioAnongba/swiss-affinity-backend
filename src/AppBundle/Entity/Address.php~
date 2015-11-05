@@ -34,6 +34,7 @@ class Address
      * @var integer
      *
      * @ORM\Column(name="street_number", type="integer")
+     * @Assert\NotBlank(message="NuméroS invalide : vide")
      *
      */
     private $streetNumber;
@@ -49,6 +50,7 @@ class Address
      * @var string
      *
      * @ORM\Column(name="city", type="string", length=255)
+     * @Assert\NotBlank(message="Ville invalide : vide")
      */
     private $city;
 
@@ -56,6 +58,7 @@ class Address
      * @var integer
      *
      * @ORM\Column(name="zip_code", type="integer")
+     * @Assert\NotBlank(message="code postal invalide : vide")
      */
     private $zipCode;
 
@@ -63,6 +66,7 @@ class Address
      * @var string
      *
      * @ORM\Column(name="country", type="string", length=3)
+     * @Assert\NotBlank(message="Pays invalide : vide")
      * @Assert\Country()
      */
     private $country;

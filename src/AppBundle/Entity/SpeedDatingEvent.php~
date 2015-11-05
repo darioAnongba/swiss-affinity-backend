@@ -1,0 +1,242 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+use Symfony\Component\Validator\Constraints as Assert;
+
+/**
+ * Class representig an event in general
+ *
+ * @ORM\Entity()
+ * @ORM\Table(name="speed_dating_events")
+ *
+ */
+class SpeedDatingEvent extends Event
+{
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="men_seats", type="integer")
+     */
+    private $menSeats;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="women_seats", type="integer")
+     */
+    private $womenSeats;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="num_men_registered", type="integer")
+     */
+    private $numMenRegistered;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="num_women_registered", type="integer")
+     */
+    private $numWomenRegistered;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="min_age", type="integer")
+     */
+    private $minAge;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="max_age", type="integer")
+     */
+    private $maxAge;
+
+    /**
+     * @var integer
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Establishment")
+     */
+    private $establishment;
+
+    /**
+     * Creates a new Event
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Set menSeats
+     *
+     * @param integer $menSeats
+     *
+     * @return SpeedDatingEvent
+     */
+    public function setMenSeats($menSeats)
+    {
+        $this->menSeats = $menSeats;
+
+        return $this;
+    }
+
+    /**
+     * Get menSeats
+     *
+     * @return integer
+     */
+    public function getMenSeats()
+    {
+        return $this->menSeats;
+    }
+
+    /**
+     * Set womenSeats
+     *
+     * @param integer $womenSeats
+     *
+     * @return SpeedDatingEvent
+     */
+    public function setWomenSeats($womenSeats)
+    {
+        $this->womenSeats = $womenSeats;
+
+        return $this;
+    }
+
+    /**
+     * Get womenSeats
+     *
+     * @return integer
+     */
+    public function getWomenSeats()
+    {
+        return $this->womenSeats;
+    }
+
+    /**
+     * Set numMenRegistered
+     *
+     * @param integer $numMenRegistered
+     *
+     * @return SpeedDatingEvent
+     */
+    public function setNumMenRegistered($numMenRegistered)
+    {
+        $this->numMenRegistered = $numMenRegistered;
+
+        return $this;
+    }
+
+    /**
+     * Get numMenRegistered
+     *
+     * @return integer
+     */
+    public function getNumMenRegistered()
+    {
+        return $this->numMenRegistered;
+    }
+
+    /**
+     * Set numWomenRegistered
+     *
+     * @param integer $numWomenRegistered
+     *
+     * @return SpeedDatingEvent
+     */
+    public function setNumWomenRegistered($numWomenRegistered)
+    {
+        $this->numWomenRegistered = $numWomenRegistered;
+
+        return $this;
+    }
+
+    /**
+     * Get numWomenRegistered
+     *
+     * @return integer
+     */
+    public function getNumWomenRegistered()
+    {
+        return $this->numWomenRegistered;
+    }
+
+    /**
+     * Set minAge
+     *
+     * @param integer $minAge
+     *
+     * @return SpeedDatingEvent
+     */
+    public function setMinAge($minAge)
+    {
+        $this->minAge = $minAge;
+
+        return $this;
+    }
+
+    /**
+     * Get minAge
+     *
+     * @return integer
+     */
+    public function getMinAge()
+    {
+        return $this->minAge;
+    }
+
+    /**
+     * Set maxAge
+     *
+     * @param integer $maxAge
+     *
+     * @return SpeedDatingEvent
+     */
+    public function setMaxAge($maxAge)
+    {
+        $this->maxAge = $maxAge;
+
+        return $this;
+    }
+
+    /**
+     * Get maxAge
+     *
+     * @return integer
+     */
+    public function getMaxAge()
+    {
+        return $this->maxAge;
+    }
+
+    /**
+     * Set establishment
+     *
+     * @param \AppBundle\Entity\Establishment $establishment
+     *
+     * @return SpeedDatingEvent
+     */
+    public function setEstablishment(Establishment $establishment = null)
+    {
+        $this->establishment = $establishment;
+
+        return $this;
+    }
+
+    /**
+     * Get establishment
+     *
+     * @return \AppBundle\Entity\Establishment
+     */
+    public function getEstablishment()
+    {
+        return $this->establishment;
+    }
+}

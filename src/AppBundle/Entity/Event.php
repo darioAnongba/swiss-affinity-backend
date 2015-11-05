@@ -14,13 +14,16 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * Class representig an event in general
  *
- * @ORM\Entity
+ * @ORM\Entity()
  * @ORM\Table(name="events")
+ * @ORM\InheritanceType("SINGLE_TABLE")
+ * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({"speed_dating" = "SpeedDatingEvent"})
  *
  * @Vich\Uploadable
  *
  */
-class Event
+abstract class Event
 {
     /**
      * @var integer
@@ -351,7 +354,7 @@ class Event
      *
      * @return Event
      */
-    public function setLocation(\AppBundle\Entity\Location $location = null)
+    public function setLocation(Location $location = null)
     {
         $this->location = $location;
 
@@ -375,7 +378,7 @@ class Event
      *
      * @return Event
      */
-    public function addAnimator(\AppBundle\Entity\User $animator)
+    public function addAnimator(User $animator)
     {
         $this->animators[] = $animator;
 
@@ -387,7 +390,7 @@ class Event
      *
      * @param \AppBundle\Entity\User $animator
      */
-    public function removeAnimator(\AppBundle\Entity\User $animator)
+    public function removeAnimator(User $animator)
     {
         $this->animators->removeElement($animator);
     }
@@ -409,7 +412,7 @@ class Event
      *
      * @return Event
      */
-    public function setConfirmation(\AppBundle\Entity\Confirmation $confirmation = null)
+    public function setConfirmation(Confirmation $confirmation = null)
     {
         $this->confirmation = $confirmation;
 
@@ -433,7 +436,7 @@ class Event
      *
      * @return Event
      */
-    public function setCreatedBy(\AppBundle\Entity\User $createdBy = null)
+    public function setCreatedBy(User $createdBy = null)
     {
         $this->createdBy = $createdBy;
 
@@ -481,7 +484,7 @@ class Event
      *
      * @return Event
      */
-    public function setModifiedBy(\AppBundle\Entity\User $modifiedBy = null)
+    public function setModifiedBy(User $modifiedBy = null)
     {
         $this->modifiedBy = $modifiedBy;
 

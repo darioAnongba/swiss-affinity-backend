@@ -8,16 +8,24 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
+
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * Class User representing a User (client or contributor)
  *
  * @ORM\Entity
  * @ORM\Table(name="users")
+ *
+ * @Vich\Uploadable
+ *
  */
 class User extends BaseUser
 {
@@ -148,6 +156,28 @@ class User extends BaseUser
      */
     protected $categories;
 
+    /**
+     * @Vich\UploadableField(mapping="user_image", fileNameProperty="imagePath")
+     *
+     * @var File
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     *
+     * @var string
+     */
+    private $imagePath;
+
+    /**
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     * @Assert\DateTime()
+     *
+     * @var \DateTime
+     */
+    private $updatedAt;
+    
     /**
      * Creates a new User
      */
@@ -494,5 +524,77 @@ class User extends BaseUser
     public function getEventsAttended()
     {
         return $this->eventsAttended;
+    }
+
+    /**
+     * Set imagePath
+     *
+     * @param string $imagePath
+     *
+     * @return User
+     */
+    public function setImagePath($imagePath)
+    {
+        $this->imagePath = $imagePath;
+
+        return $this;
+    }
+
+    /**
+     * Get imagePath
+     *
+     * @return string
+     */
+    public function getImagePath()
+    {
+        return $this->imagePath;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param \DateTime
+     *
+     * @ORM\PreUpdate()
+     */
+    public function setUpdatedAt()
+    {
+        $this->updatedAt = new \DateTime("now");
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the  update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
+     */
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+
+        if ($image) {
+            $this->updatedAt = new \DateTime('now');
+        }
+    }
+
+    /**
+     * @return File
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
     }
 }

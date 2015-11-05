@@ -8,18 +8,24 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
+
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\Security\Core\Util\SecureRandom;
+
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * Class User representing a User (client or contributor)
  *
  * @ORM\Entity
  * @ORM\Table(name="users")
+ *
+ * @Vich\Uploadable
+ *
  */
 class User extends BaseUser
 {
@@ -60,8 +66,7 @@ class User extends BaseUser
     /**
      * @var string
      *
-     * @ORM\Column(name="mobile_phone", type="string", length=18)
-     * @Assert\NotBlank(message="Téléphone portable invalide : vide", groups={"Registration", "Profile"})
+     * @ORM\Column(name="mobile_phone", type="string", length=18, nullable=true)
      * @Assert\Regex(
      *        message="Téléphone portable invalide",
      *        pattern="/^[+0-9\s]{10,18}/",
@@ -76,7 +81,7 @@ class User extends BaseUser
      * @Assert\Regex(
      *        message="Téléphone fixe invalide",
      *        pattern="/^[+0-9\s]{10,18}/",
-     *        groups={"Registration", "Profile"})
+     *        groups={"Profile"})
      */
     protected $homePhone;
 
@@ -85,7 +90,10 @@ class User extends BaseUser
      *
      * @ORM\Column(name="gender", type="string", length=10)
      * @Assert\NotBlank(message="Sexe invalide : vide")
-     * @Assert\Choice(choices = {"male", "female"}, message = "Le choix du sexe n'est pas valide.")
+     * @Assert\Choice(
+     *      choices = {"male", "female"},
+     *      message = "Le choix du sexe n'est pas valide.",
+     *      groups={"Registration", "Profile"})
      */
     protected $gender;
 
@@ -93,7 +101,10 @@ class User extends BaseUser
      * @var string
      *
      * @ORM\Column(name="relationship", type="string", length=10, nullable=true)
-     * @Assert\Choice(choices={"single", "married", "divorced"}, message = "Choisissez une relation valide.")
+     * @Assert\Choice(
+     *          choices={"single", "married", "divorced"},
+     *          message = "Choisissez une relation valide.",
+     *          groups={"Profile"})
      */
     protected $relationship;
 
@@ -101,8 +112,8 @@ class User extends BaseUser
      * @var \DateTime
      *
      * @ORM\Column(name="birth_date", type="date")
-     * @Assert\NotBlank(message="Date de naissance invalide : vide")
-     * @Assert\Date(message="Cette valeur n'est pas une date valide.")
+     * @Assert\NotBlank(message="Date de naissance invalide : vide", groups={"Registration", "Profile"})
+     * @Assert\Date(message="Cette valeur n'est pas une date valide.", groups={"Registration", "Profile"})
      */
     protected $birthDate;
 
@@ -110,6 +121,10 @@ class User extends BaseUser
      * @var string
      *
      * @ORM\Column(name="profession", type="string", length=255, nullable=true)
+     * @Assert\Regex(
+     *        message="Prénom invalide, max 50 caract., lettres uniquement",
+     *        pattern="/^[a-zA-Z]{2,100}/",
+     *        groups={"Profile"})
      */
     protected $profession;
 
@@ -142,21 +157,27 @@ class User extends BaseUser
     protected $categories;
 
     /**
-     * @Assert\File(maxSize="2048k")
-     * @Assert\Image(mimeTypesMessage="L'image envoyée n'est pas valide.")
+     * @Vich\UploadableField(mapping="user_image", fileNameProperty="imagePath")
+     *
+     * @var File
      */
-    protected $profilePictureFile;
-
-    // for temporary storage
-    protected $tempProfilePicturePath;
+    private $imageFile;
 
     /**
-     * @var string
+     * @ORM\Column(type="string", length=255, nullable=true)
      *
-     * @ORM\Column(name="profile_picture_path", type="string", length=255, nullable=true)
+     * @var string
      */
-    protected $profilePicturePath;
+    private $imagePath;
 
+    /**
+     * @ORM\Column(name="updated_at", type="datetime", nullable=true)
+     * @Assert\DateTime()
+     *
+     * @var \DateTime
+     */
+    private $updatedAt;
+    
     /**
      * Creates a new User
      */
@@ -352,6 +373,10 @@ class User extends BaseUser
         return $this->gender;
     }
 
+    public static function getGenders() {
+        return array('male' => 'Male', 'female' => 'Female');
+    }
+
     /**
      * Set relationship
      *
@@ -382,9 +407,7 @@ class User extends BaseUser
      * @return array
      */
     public static function getRelationships() {
-        return array('divorced' => 'Divorcé',
-            'single' => 'Célibataire',
-            'married' => 'Marrié');
+        return array('single' => 'Single', 'divorced' => 'Divorced', 'married' => 'Married');
     }
 
     /**
@@ -504,167 +527,74 @@ class User extends BaseUser
     }
 
     /**
-     * Sets the file used for profile picture uploads
+     * Set imagePath
      *
-     * @param UploadedFile $file
-     * @return object
-     */
-    public function setProfilePictureFile(UploadedFile $file = null) {
-        // set the value of the holder
-        $this->profilePictureFile       =   $file;
-        // check if we have an old image path
-        if (isset($this->profilePicturePath)) {
-            // store the old name to delete after the update
-            $this->tempProfilePicturePath = $this->profilePicturePath;
-            $this->profilePicturePath = null;
-        } else {
-            $this->profilePicturePath = 'initial';
-        }
-
-        return $this;
-    }
-
-    /**
-     * Get the file used for profile picture uploads
+     * @param string $imagePath
      *
-     * @return UploadedFile
-     */
-    public function getProfilePictureFile() {
-
-        return $this->profilePictureFile;
-    }
-
-    /**
-     * Set profilePicturePath
-     *
-     * @param string $profilePicturePath
      * @return User
      */
-    public function setProfilePicturePath($profilePicturePath)
+    public function setImagePath($imagePath)
     {
-        $this->profilePicturePath = $profilePicturePath;
+        $this->imagePath = $imagePath;
 
         return $this;
     }
 
     /**
-     * Get profilePicturePath
+     * Get imagePath
      *
      * @return string
      */
-    public function getProfilePicturePath()
+    public function getImagePath()
     {
-        return $this->profilePicturePath;
+        return $this->imagePath;
     }
 
     /**
-     * Get the absolute path of the profilePicturePath
-     */
-    public function getProfilePictureAbsolutePath() {
-        return null === $this->profilePicturePath
-            ? null
-            : $this->getUploadRootDir().'/'.$this->profilePicturePath;
-    }
-
-    /**
-     * Get root directory for file uploads
+     * Set updatedAt
      *
-     * @return string
-     */
-    protected function getUploadRootDir() {
-        // the absolute directory path where uploaded
-        // documents should be saved
-        return __DIR__.'/../../../../web/'.$this->getUploadDir();
-    }
-
-    /**
-     * Specifies where in the /web directory profile pic uploads are stored
+     * @param \DateTime
      *
-     * @return string
-     */
-    protected function getUploadDir() {
-        // the type param is to change these methods at a later date for more file uploads
-        // get rid of the __DIR__ so it doesn't screw up
-        // when displaying uploaded doc/image in the view.
-        return 'uploads/user/profilepics';
-    }
-
-    /**
-     * Get the web path for the user
-     *
-     * @return string
-     */
-    public function getWebProfilePicturePath() {
-
-        return '/'.$this->getUploadDir().'/'.$this->getProfilePicturePath();
-    }
-
-    /**
-     * @ORM\PrePersist()
      * @ORM\PreUpdate()
      */
-    public function preUploadProfilePicture() {
-        if (null !== $this->getProfilePictureFile()) {
-            // a file was uploaded
-            // generate a unique filename
-            $filename = $this->generateRandomProfilePictureFilename();
-            $this->setProfilePicturePath($filename.'.'.$this->getProfilePictureFile()->guessExtension());
-        }
-    }
-
-    /**
-     * Generates a 32 char long random filename
-     *
-     * @return string
-     */
-    public function generateRandomProfilePictureFilename() {
-        $count                  =   0;
-        do {
-            $generator = new SecureRandom();
-            $random = $generator->nextBytes(16);
-            $randomString = bin2hex($random);
-            $count++;
-        }
-        while(file_exists($this->getUploadRootDir().'/'.$randomString.'.'.$this->getProfilePictureFile()->guessExtension()) && $count < 50);
-
-        return $randomString;
-    }
-
-    /**
-     * @ORM\PostPersist()
-     * @ORM\PostUpdate()
-     *
-     * Upload the profile picture
-     *
-     * @return mixed
-     */
-    public function uploadProfilePicture() {
-        // check there is a profile pic to upload
-        if ($this->getProfilePictureFile() === null) {
-            return;
-        }
-        // if there is an error when moving the file, an exception will
-        // be automatically thrown by move(). This will properly prevent
-        // the entity from being persisted to the database on error
-        $this->getProfilePictureFile()->move($this->getUploadRootDir(), $this->getProfilePicturePath());
-
-        // check if we have an old image
-        if (isset($this->tempProfilePicturePath) && file_exists($this->getUploadRootDir().'/'.$this->tempProfilePicturePath)) {
-            // delete the old image
-            unlink($this->getUploadRootDir().'/'.$this->tempProfilePicturePath);
-            // clear the temp image path
-            $this->tempProfilePicturePath = null;
-        }
-        $this->profilePictureFile = null;
-    }
-
-    /**
-     * @ORM\PostRemove()
-     */
-    public function removeProfilePictureFile()
+    public function setUpdatedAt()
     {
-        if ($file = $this->getProfilePictureAbsolutePath() && file_exists($this->getProfilePictureAbsolutePath())) {
-            unlink($file);
+        $this->updatedAt = new \DateTime("now");
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
+     * of 'UploadedFile' is injected into this setter to trigger the  update. If this
+     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
+     * must be able to accept an instance of 'File' as the bundle will inject one here
+     * during Doctrine hydration.
+     *
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $image
+     */
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+
+        if ($image) {
+            $this->updatedAt = new \DateTime('now');
         }
+    }
+
+    /**
+     * @return File
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
     }
 }
