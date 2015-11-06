@@ -1,3 +1,4 @@
+
 admin_area:
     resource: "@SonataAdminBundle/Resources/config/routing/sonata_admin.xml"
     prefix: /admin
@@ -29,7 +30,12 @@ api_locations:
     prefix: /api
     resource: AppBundle\Controller\LocationController
 
-rest_registrations:
+api_registrations:
     type: rest
     prefix: /api
     resource: AppBundle\Controller\RegistrationController
+
+app:
+    type: annotation
+    resource: @AppBundle/Controller/DefaultController.php
+

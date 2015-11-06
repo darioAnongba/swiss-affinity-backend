@@ -1,0 +1,12 @@
+# This file is auto-generated during the composer install
+parameters:
+    database_host: mbsx.myd.infomaniak.com
+    database_port: null
+    database_name: mbsx_swissaffinity
+    database_user: mbsx_webmaster
+    database_password: J9TLT27GMONU
+    mailer_transport: smtp
+    mailer_host: 127.0.0.1
+    mailer_user: null
+    mailer_password: null
+    secret: 4a04393bc38e85b0c418c85f5af886df
