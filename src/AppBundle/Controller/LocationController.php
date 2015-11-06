@@ -22,7 +22,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class LocationController extends FOSRestController
 {
     /**
-     * List all locations.
+     * List all locations sorted by name.
      *
      * @ApiDoc(
      *   resource = true,
@@ -33,15 +33,45 @@ class LocationController extends FOSRestController
      *
      * @Annotations\View()
      *
-     * @param ParamFetcherInterface $paramFetcher
      * @return array
      */
-    public function getLocationsAction(ParamFetcherInterface $paramFetcher)
+    public function getLocationsAction()
     {
-        $locations = $this->getDoctrine()
-            ->getRepository('AppBundle:Location')
-            ->findBy(array(), array('name' => 'DESC'));
+        $locations = $this->getDoctrine()->getRepository('AppBundle:Location')
+            ->findBy(array(), array('name' => 'ASC'));
 
         return $locations;
+    }
+
+    /**
+     * Get all events from a given location sorted by date start.
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   statusCodes={
+     *     200 = "Returned when successful",
+     *     404 = "Returned when the location is not found"
+     *   }
+     * )
+     *
+     * @Annotations\View(templateVar="events")
+     *
+     * @param integer $id   The location's id
+     * @return array
+     *
+     * @throws NotFoundHttpException when user not exist
+     */
+    public function getLocationsEventsAction($id)
+    {
+        $location = $this->getDoctrine()->getRepository('AppBundle:Location')->find($id);
+
+        if(null === $location) throw $this->createNotFoundException("Location not found");
+
+        $events = $this->getDoctrine()->getRepository('AppBundle:Event')
+            ->findBy(array('location' => $location, "state" => "Pending"), array('dateStart' => 'DESC'));
+
+        $view = new View($events);
+
+        return $view;
     }
 }

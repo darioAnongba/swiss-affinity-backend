@@ -29,7 +29,6 @@ class UserAdmin extends Admin
                 ->add('mobilePhone')
                 ->add('homePhone')
                 ->add('gender')
-                ->add('relationship')
                 ->add('birthDate')
                 ->add('profession')
             ->end();
@@ -49,11 +48,6 @@ class UserAdmin extends Admin
                 ->add('homePhone')
                 ->add('gender', 'choice', array(
                     'choices' => USer::getGenders()
-                ))
-                ->add('relationship', 'choice', array(
-                    'placeholder' => 'Choose one below',
-                    'choices' => User::getRelationships(),
-                    'required' => false
                 ))
                 ->add('birthdate', 'date', array(
                     'widget' => 'single_text',
@@ -109,9 +103,6 @@ class UserAdmin extends Admin
             ->add('locationsOfInterest')
             ->add('gender', null, array(), 'choice', array(
                 'choices' => User::getGenders()
-            ))
-            ->add('relationship', null, array(), 'choice', array(
-                'choices' => User::getRelationships()
             ));
     }
 

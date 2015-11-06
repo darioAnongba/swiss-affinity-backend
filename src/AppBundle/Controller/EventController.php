@@ -8,12 +8,10 @@
 
 namespace AppBundle\Controller;
 
-use AppBundle\Entity\Location;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 use FOS\RestBundle\Controller\FOSRestController;
-use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\Controller\Annotations;
 
 use Symfony\Component\Form\FormTypeInterface;
@@ -22,7 +20,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class EventController extends FOSRestController
 {
     /**
-     * List all events.
+     * List all events sorted by date.
      *
      * @ApiDoc(
      *   resource = true,
@@ -31,24 +29,14 @@ class EventController extends FOSRestController
      *   }
      * )
      *
-     * @Annotations\QueryParam(name="offset", requirements="\d+", nullable=true, description="Offset from which to start listing events.")
-     * @Annotations\QueryParam(name="limit", requirements="\d+", default="5", description="How many events to return.")
-     *
-     * @Annotations\View()
-     *
-     * @param ParamFetcherInterface $paramFetcher
      * @return array
      */
-    public function getEventsAction(ParamFetcherInterface $paramFetcher)
+    public function getEventsAction()
     {
-        $offset = $paramFetcher->get('offset');
-        $limit = $paramFetcher->get('limit');
+        $events = $this->getDoctrine()->getRepository('AppBundle:Event')
+            ->findBy(array(), array('dateStart' => 'DESC'));
 
-        $events = $this->getDoctrine()
-            ->getRepository('AppBundle:Event')
-            ->findBy(array(), array('dateStart' => 'DESC'), $limit, $offset);
-
-        return $events;
+        return new View($events);
     }
 
     /**
@@ -78,8 +66,6 @@ class EventController extends FOSRestController
             throw $this->createNotFoundException("Event does not exist.");
         }
 
-        $view = new View($event);
-
-        return $view;
+        return new View($event);
     }
 }

@@ -78,25 +78,6 @@ class UserController extends FOSRestController
     }
 
     /**
-     * Presents the form to use to create a new User.
-     *
-     * @ApiDoc(
-     *   resource = true,
-     *   statusCodes = {
-     *     200 = "Returned when successful"
-     *   }
-     * )
-     *
-     * @Annotations\View()
-     *
-     * @return FormTypeInterface
-     */
-    public function newUserAction()
-    {
-        return $this->createForm(new RegistrationType());
-    }
-
-    /**
      * Creates a new user from the submitted data.
      *
      * @ApiDoc(
@@ -138,40 +119,6 @@ class UserController extends FOSRestController
         return array(
             'form' => $form
         );
-    }
-
-    /**
-     * Presents the form to use to update an existing user.
-     *
-     * @ApiDoc(
-     *   resource = true,
-     *   statusCodes={
-     *     200 = "Returned when successful",
-     *     404 = "Returned when the user is not found"
-     *   }
-     * )
-     *
-     * @Annotations\View()
-     *
-     * @param Request $request the request object
-     * @param string     $username      the user username
-     *
-     * @return FormTypeInterface
-     *
-     * @throws NotFoundHttpException when note not exist
-     */
-    public function editUsersAction(Request $request, $username)
-    {
-        $userManager = $this->get('fos_user.user_manager');
-        $user = $userManager->findUserByUsername($username);
-
-        if (null == $user) {
-            throw $this->createNotFoundException("User does not exist.");
-        }
-
-        $form = $this->createForm('app_user_profile', $user);
-
-        return $form;
     }
 
     /**
@@ -246,7 +193,7 @@ class UserController extends FOSRestController
     }
 
     /**
-     * List all locations of a User.
+     * List all locations of interest for a User.
      *
      * @ApiDoc(
      *   resource = true,
@@ -270,6 +217,35 @@ class UserController extends FOSRestController
         if(null === $user) throw $this->createNotFoundException("User not found");
 
         $view = new View($user->getLocationsOfInterest());
+        return $view;
+    }
+
+    /**
+     * List all events a User has attented (Registrations that were confirmed).
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   statusCodes={
+     *     200 = "Returned when successful",
+     *     404 = "Returned when the user is not found"
+     *   }
+     * )
+     *
+     * @Annotations\View(templateVar="locations")
+     *
+     * @param integer $username   The user's username
+     * @return array
+     *
+     * @throws NotFoundHttpException when user not exist
+     */
+    public function getUserEventsAction($username)
+    {
+        $user = $this->get('fos_user.user_manager')->findUserByUsernameOrEmail($username);
+
+        if(null === $user) throw $this->createNotFoundException("User not found");
+
+        $events = $user->getEventsAttended();
+        $view = new View($user->getEventsAttended());
         return $view;
     }
 }

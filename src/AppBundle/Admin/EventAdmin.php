@@ -29,6 +29,7 @@ class EventAdmin extends Admin
                 ->add('basePrice')
                 ->add('description')
                 ->add('animators')
+                ->add('state')
             ->end();
     }
 
@@ -52,6 +53,9 @@ class EventAdmin extends Admin
                 ->add('basePrice')
             ->end()
             ->with('Details 2', array('class' => 'col-md-4'))
+                ->add('state', 'choice', array(
+                    'choices' => Event::getStates()
+                ))
                 ->add('animators', 'entity', array(
                     'class' => 'AppBundle\Entity\User',
                     'property' => 'fullName',

@@ -18,6 +18,8 @@ use Symfony\Component\HttpFoundation\File\File;
 
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+use JMS\Serializer\Annotation as JMS;
+
 /**
  * Class User representing a User (client or contributor)
  *
@@ -98,17 +100,6 @@ class User extends BaseUser
     protected $gender;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="relationship", type="string", length=10, nullable=true)
-     * @Assert\Choice(
-     *          choices={"single", "married", "divorced"},
-     *          message = "Choisissez une relation valide.",
-     *          groups={"Profile"})
-     */
-    protected $relationship;
-
-    /**
      * @var \DateTime
      *
      * @ORM\Column(name="birth_date", type="date")
@@ -132,6 +123,7 @@ class User extends BaseUser
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="Location")
+     * @ORM\OrderBy({"name" = "ASC"})
      */
     protected $locationsOfInterest;
 
@@ -139,9 +131,12 @@ class User extends BaseUser
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="Event")
+     * @ORM\OrderBy({"dateStart" = "DESC"})
+     *
+     * @JMS\Exclude()
      */
-
     protected $eventsAttended;
+
     /**
      * @var Address
      *
@@ -153,6 +148,8 @@ class User extends BaseUser
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="UserCategory")
+     *
+     * @JMS\Exclude()
      */
     protected $categories;
 
@@ -375,39 +372,6 @@ class User extends BaseUser
 
     public static function getGenders() {
         return array('male' => 'Male', 'female' => 'Female');
-    }
-
-    /**
-     * Set relationship
-     *
-     * @param boolean $relationship
-     *
-     * @return User
-     */
-    public function setRelationship($relationship)
-    {
-        $this->relationship = $relationship;
-
-        return $this;
-    }
-
-    /**
-     * Get relationship
-     *
-     * @return boolean
-     */
-    public function getRelationship()
-    {
-        return $this->relationship;
-    }
-
-    /**
-     * Get list of possible relationships
-     *
-     * @return array
-     */
-    public static function getRelationships() {
-        return array('single' => 'Single', 'divorced' => 'Divorced', 'married' => 'Married');
     }
 
     /**

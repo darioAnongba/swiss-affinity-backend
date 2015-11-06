@@ -11,10 +11,12 @@ use Symfony\Component\HttpFoundation\File\File;
 
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+use JMS\Serializer\Annotation as JMS;
+
 /**
  * Class representig an event in general
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="EventRepository")
  * @ORM\Table(name="events")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="discr", type="string")
@@ -87,6 +89,8 @@ abstract class Event
      * @var ArrayCollection
      *
      * @ORM\ManyToMany(targetEntity="User")
+     *
+     * @JMS\Exclude()
      */
     private $animators;
 
@@ -94,7 +98,7 @@ abstract class Event
      * @var string
      *
      * @ORM\Column(name="state", type="string", length=10)
-     * @Assert\Choice(callback = "getStates", message = "Choisissez un état valide.")
+     * @Assert\Choice(choices={"pending", "confirmed", "cancelled"}, message = "Choisissez un état valide.")
      */
     private $state;
 
@@ -125,6 +129,8 @@ abstract class Event
      *
      * @ORM\Column(name="created_at", type="datetime")
      * @Assert\DateTime()
+     *
+     * @JMS\Exclude()
      */
     private $createdAt;
 
@@ -140,6 +146,8 @@ abstract class Event
      * @var Confirmation
      *
      * @ORM\OneToOne(targetEntity="Confirmation")
+     *
+     * @JMS\Exclude()
      */
     private $confirmation;
 
@@ -147,6 +155,8 @@ abstract class Event
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
+     *
+     * @JMS\Exclude()
      */
     private $createdBy;
 
@@ -154,6 +164,8 @@ abstract class Event
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
+     *
+     * @JMS\Exclude()
      */
     private $modifiedBy;
 
@@ -163,7 +175,7 @@ abstract class Event
     public function __construct()
     {
         $this->animators = new ArrayCollection();
-        $this->state = "pending";
+        $this->state = self::getStates()["pending"];
         $this->createdAt = new \DateTime("now");
     }
 

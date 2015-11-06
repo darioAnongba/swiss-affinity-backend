@@ -9,6 +9,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
+use JMS\Serializer\Annotation as JMS;
+
 /**
  * Establishment
  *
@@ -111,6 +113,8 @@ class Establishment
      * @var Address
      *
      * @ORM\ManyToOne(targetEntity="Location")
+     *
+     * @JMS\Exclude()
      */
     private $location;
 

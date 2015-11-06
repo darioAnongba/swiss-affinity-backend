@@ -7,10 +7,6 @@ _sonata_admin:
     type: sonata_admin
     prefix: /admin
 
-app:
-    resource: "@AppBundle/Controller/"
-    type:     annotation
-
 fos_user:
     resource: "@FOSUserBundle/Resources/config/routing/all.xml"
 
@@ -18,15 +14,20 @@ NelmioApiDocBundle:
     resource: "@NelmioApiDocBundle/Resources/config/routing.yml"
     prefix:   /api/doc
 
-rest_events:
+api_events:
     type: rest
     prefix: /api
     resource: AppBundle\Controller\EventController
 
-rest_users:
+api_users:
     type: rest
     prefix: /api
     resource: AppBundle\Controller\UserController
+
+api_locations:
+    type: rest
+    prefix: /api
+    resource: AppBundle\Controller\LocationController
 
 rest_registrations:
     type: rest
