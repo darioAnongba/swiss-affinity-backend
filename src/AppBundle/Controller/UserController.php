@@ -10,6 +10,14 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
 use AppBundle\Form\RegistrationType;
+use AppBundle\Form\RESTRegistrationFacebookType;
+use AppBundle\Form\RESTRegistrationType;
+use AppBundle\Form\TestType;
+use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
+use Exporter\Exception\InvalidDataFormatException;
+use Fixtures\Bundles\AnnotationsBundle\Entity\Test;
+use FOS\RestBundle\EventListener\ParamFetcherListener;
+use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\RouteRedirectView;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -17,6 +25,7 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations;
 
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -43,7 +52,7 @@ class UserController extends FOSRestController
         $userManager = $this->get('fos_user.user_manager');
         $users = $userManager->findUsers();
 
-        return $users;
+        return new View($users);
     }
 
     /**
@@ -73,8 +82,26 @@ class UserController extends FOSRestController
             throw $this->createNotFoundException("User does not exist.");
         }
 
-        $view = new View($user);
-        return $view;
+        return new View($user);
+    }
+
+    /**
+     * Presents the form to use to create a new User.
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   statusCodes = {
+     *     200 = "Returned when successful",
+     *   }
+     * )
+     *
+     * @Annotations\View()
+     *
+     * @return FormTypeInterface
+     */
+    public function newUserAction()
+    {
+        return $this->createForm(new RESTRegistrationType());
     }
 
     /**
@@ -82,7 +109,7 @@ class UserController extends FOSRestController
      *
      * @ApiDoc(
      *   resource = true,
-     *   input = "AppBundle\Form\RegistrationType",
+     *   input = "AppBundle\Form\RESTRegistrationType",
      *   statusCodes = {
      *     200 = "Returned when successful",
      *     400 = "Returned when the form has errors"
@@ -100,25 +127,24 @@ class UserController extends FOSRestController
      */
     public function postUsersAction(Request $request)
     {
-        $userManager = $this->get('fos_user.user_manager');
-        /**
-         * @var $user User
-         */
-        $user = $userManager->createUser();
+        $user = $this->get('fos_user.user_manager')->createUser();
 
-        $form = $this->createForm(new RegistrationType(), $user);
+        $form = $this->createForm(new RESTRegistrationType(), $user);
+        $form->handleRequest($request);
 
-        $form->submit($request);
         if ($form->isValid()) {
+            $locations = $this->getDoctrine()->getRepository('AppBundle:Location')->findAll();
 
-            $userManager->updateUser($user);
+            foreach($locations as $location) {
+                $user->addLocationsOfInterest($location);
+            }
 
-            return $this->routeRedirectView('get_user', array('id' => $user->getUsername()));
+            $this->get('fos_user.user_manager')->updateUser($user);
+
+            return $user;
         }
 
-        return array(
-            'form' => $form
-        );
+        return new View(array('form' => $form));
     }
 
     /**
@@ -152,8 +178,6 @@ class UserController extends FOSRestController
 
         if (null == $user) {
             throw $this->createNotFoundException("User does not exist.");
-        } else {
-            $statusCode = Response::HTTP_NO_CONTENT;
         }
 
         $form = $this->createForm('app_user_profile', $user);
@@ -162,7 +186,7 @@ class UserController extends FOSRestController
         if ($form->isValid()) {
             $userManager->updateUser($user);
 
-            return $this->routeRedirectView('get_user', array('username' => $user->getUsername()), $statusCode);
+            return $this->routeRedirectView('get_user', array('username' => $user->getUsername()), Response::HTTP_NO_CONTENT);
         }
 
         return $form;

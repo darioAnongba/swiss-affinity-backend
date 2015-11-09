@@ -43,6 +43,14 @@ class User extends BaseUser
     /**
      * @var string
      *
+     * @ORM\Column(name="facebook_id", type="bigint", unique=true, nullable=true)
+     * @Assert\NotBlank(message="Invalid Facebook id", groups={"FacebookRegistration"})
+     */
+    protected $facebookId;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="last_name", type="string", length=255)
      * @Assert\NotBlank(message="Nom invalide : vide", groups={"Registration", "Profile"})
      * @Assert\Regex(
@@ -91,7 +99,7 @@ class User extends BaseUser
      * @var string
      *
      * @ORM\Column(name="gender", type="string", length=10)
-     * @Assert\NotBlank(message="Sexe invalide : vide")
+     * @Assert\NotBlank(message="Sexe invalide : vide", groups={"Registration", "Profile"})
      * @Assert\Choice(
      *      choices = {"male", "female"},
      *      message = "Le choix du sexe n'est pas valide.",
@@ -185,6 +193,27 @@ class User extends BaseUser
         $this->locationsOfInterest = new ArrayCollection();
         $this->eventsAttended = new ArrayCollection();
         $this->categories = new ArrayCollection();
+    }
+
+    /**
+     * Get FacebookId
+     *
+     * @return string
+     */
+    public function getFacebookId() {
+        return $this->facebookId;
+    }
+
+    /**
+     * Set FacebookId
+     *
+     * @param $facebookId string facebook ID
+     * @return User
+     */
+    public function setFacebookId($facebookId) {
+        $this->facebookId = $facebookId;
+
+        return $this;
     }
 
     /**

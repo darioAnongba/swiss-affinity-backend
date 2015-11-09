@@ -80,9 +80,10 @@ fos_rest:
     routing_loader:
         default_format: json
         include_format: false
-    param_fetcher_listener: true
     view:
         view_response_listener: 'force'
+    body_listener: true
+    param_fetcher_listener: true
     exception:
         enabled: true
         exception_controller: 'FOS\RestBundle\Controller\ExceptionController::showAction'
