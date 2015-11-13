@@ -56,7 +56,7 @@ class UserController extends FOSRestController
     }
 
     /**
-     * Get a single user.
+     * Get a single user by Facebook id
      *
      * @ApiDoc(
      *   output="AppBundle\Entity\User",
@@ -68,15 +68,15 @@ class UserController extends FOSRestController
      *
      * @Annotations\View(templateVar="user")
      *
-     * @param $username
+     * @param $id
      * @return array
      *
-     * @throws NotFoundHttpException when event does not exist
+     * @throws NotFoundHttpException when user does not exist
      */
-    public function getUserAction($username)
+    public function getUserAction($id)
     {
-        $userManager = $this->get('fos_user.user_manager');
-        $user = $userManager->findUserByUsername($username);
+        $repo = $this->getDoctrine()->getRepository('AppBundle:User');
+        $user = $repo->findOneBy(array('facebookId' => $id));
 
         if (null == $user) {
             throw $this->createNotFoundException("User does not exist.");

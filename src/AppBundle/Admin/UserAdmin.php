@@ -92,6 +92,7 @@ class UserAdmin extends Admin
                         )
                     )
                 ))
+                ->add('facebookId', 'text')
             ->end();
     }
 
