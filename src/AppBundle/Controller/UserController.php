@@ -198,7 +198,8 @@ class UserController extends FOSRestController
      * @ApiDoc(
      *   resource = true,
      *   statusCodes={
-     *     204="Returned when successful"
+     *     204="Returned when successful",
+     *     404 = "Returned when the user is not found"
      *   }
      * )
      *
@@ -210,6 +211,10 @@ class UserController extends FOSRestController
     {
         $userManager = $this->get('fos_user.user_manager');
         $user = $userManager->findUserByUsername($username);
+
+        if (null === $user) {
+            throw $this->createNotFoundException("User does not exist.");
+        }
 
         $userManager->deleteUser($user);
 
@@ -240,8 +245,7 @@ class UserController extends FOSRestController
 
         if(null === $user) throw $this->createNotFoundException("User not found");
 
-        $view = new View($user->getLocationsOfInterest());
-        return $view;
+        return new View($user->getLocationsOfInterest());
     }
 
     /**
@@ -268,8 +272,6 @@ class UserController extends FOSRestController
 
         if(null === $user) throw $this->createNotFoundException("User not found");
 
-        $events = $user->getEventsAttended();
-        $view = new View($user->getEventsAttended());
-        return $view;
+        return new View($user->getEventsAttended());
     }
 }
