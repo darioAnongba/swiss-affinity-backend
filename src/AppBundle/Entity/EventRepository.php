@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * RegistrationRepository
@@ -10,4 +11,14 @@ use Doctrine\ORM\EntityRepository;
  * repository methods below.
  */
 class EventRepository extends EntityRepository
-{}
+{
+    public function findNext() {
+        $query = $this->createQueryBuilder('p')
+            ->where('p.dateStart > :date')
+            ->setParameter('date', new \DateTime('now'))
+            ->orderBy('p.dateStart', 'ASC')
+            ->getQuery();
+
+        return $query->getResult();
+    }
+}

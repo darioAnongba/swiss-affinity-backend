@@ -95,6 +95,16 @@ abstract class Event
     private $animators;
 
     /**
+     * @var ArrayCollection
+     *
+     * @ORM\ManyToMany(targetEntity="User")
+     * @ORM\JoinTable(name="events_participants")
+     *
+     * @JMS\Exclude()
+     */
+    private $participants;
+
+    /**
      * @var string
      *
      * @ORM\Column(name="state", type="string", length=10)
@@ -175,6 +185,7 @@ abstract class Event
     public function __construct()
     {
         $this->animators = new ArrayCollection();
+        $this->participants = new ArrayCollection();
         $this->state = self::getStates()["pending"];
         $this->createdAt = new \DateTime("now");
     }
@@ -597,5 +608,39 @@ abstract class Event
     public function getImageFile()
     {
         return $this->imageFile;
+    }
+
+    /**
+     * Add participant
+     *
+     * @param \AppBundle\Entity\User $participant
+     *
+     * @return Event
+     */
+    public function addParticipant(User $participant)
+    {
+        $this->participants[] = $participant;
+
+        return $this;
+    }
+
+    /**
+     * Remove participant
+     *
+     * @param \AppBundle\Entity\User $participant
+     */
+    public function removeParticipant(User $participant)
+    {
+        $this->participants->removeElement($participant);
+    }
+
+    /**
+     * Get participants
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getParticipants()
+    {
+        return $this->participants;
     }
 }

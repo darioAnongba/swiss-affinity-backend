@@ -10,8 +10,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Registration;
 use AppBundle\Form\EventRegistrationType;
-use FOS\RestBundle\Request\ParamFetcherInterface;
-use FOS\RestBundle\View\RouteRedirectView;
+use DateTime;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
@@ -20,35 +19,37 @@ use FOS\RestBundle\Controller\Annotations;
 
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RegistrationController extends FOSRestController
 {
     /**
-     * List all registrations for a user.
+     * List all registrations for a User.
      *
      * @ApiDoc(
      *   resource = true,
      *   statusCodes = {
-     *     200 = "Returned when successful"
+     *     200 = "Returned when successful",
+     *     404 = "Returned when user not found"
      *   }
      * )
      *
-     * @Annotations\QueryParam(name="id", requirements="\d+", description="Id of the user")
+     * @param string $username The User username
      *
-     * @Annotations\View()
-     *
-     * @return array
+     * @return View
      */
-    public function getRegistrationsAction(ParamFetcherInterface $paramFetcher)
+    public function getUserRegistrationsAction($username)
     {
-        $id = $paramFetcher->get('id');
+        $user = $this->get('fos_user.user_manager')->findUserByUsername($username);
+
+        if (null === $user) {
+            throw $this->createNotFoundException("User does not exist.");
+        }
 
         $registrations = $this->getDoctrine()->getRepository('AppBundle:Registration')
-            ->findBy(array('user' => $id), array('date' => 'DESC'));
+            ->findBy(array('user' => $user));
 
-        return $registrations;
+        return new View($registrations);
     }
 
     /**
@@ -58,16 +59,16 @@ class RegistrationController extends FOSRestController
      *   output="AppBundle\Entity\Registration",
      *   statusCodes = {
      *     200 = "Returned when successful",
-     *     404 = "Returned when the registation is not found"
+     *     404 = "Returned when the registration is not found"
      *   }
      * )
      *
      * @Annotations\View(templateVar="registration")
      *
-     * @param $id
-     * @return array
+     * @param int $id The registration id
      *
-     * @throws NotFoundHttpException when a registration does not exist
+     * @return View
+     * @throws NotFoundHttpException when the event does not exist
      */
     public function getRegistrationAction($id)
     {
@@ -77,9 +78,26 @@ class RegistrationController extends FOSRestController
             throw $this->createNotFoundException("Registration does not exist.");
         }
 
-        $view = new View($registration);
+        return new View($registration);
+    }
 
-        return $view;
+    /**
+     * Presents the form to use to create a new Registration.
+     *
+     * @ApiDoc(
+     *   resource = true,
+     *   statusCodes = {
+     *     200 = "Returned when successful",
+     *   }
+     * )
+     *
+     * @Annotations\View()
+     *
+     * @return FormTypeInterface
+     */
+    public function newRegistrationAction()
+    {
+        return $this->createForm(new EventRegistrationType());
     }
 
     /**
@@ -90,13 +108,9 @@ class RegistrationController extends FOSRestController
      *   input = "AppBundle\Form\EventRegistrationType",
      *   statusCodes = {
      *     200 = "Returned when successful",
+     *     404 = "Returned when user or event not found",
      *     400 = "Returned when the form has errors"
      *   }
-     * )
-     *
-     * @Annotations\View(
-     *   template = "AppBundle:Registration:newRegistration.html.twig",
-     *   statusCode = Response::HTTP_BAD_REQUEST
      * )
      *
      * @param Request $request the request object
@@ -108,70 +122,93 @@ class RegistrationController extends FOSRestController
         $registration = new Registration();
 
         $form = $this->createForm(new EventRegistrationType(), $registration);
-
-        $form->submit($request);
+        $form->handleRequest($request);
 
         if ($form->isValid()) {
+            $username = $form["username"]->getData();
+            $eventId = $form["eventId"]->getData();
+
+            $user = $this->getDoctrine()->getRepository("AppBundle:User")->findOneBy(array('username' => $username));
+            $event = $this->getDoctrine()->getRepository("AppBundle:Event")->find($eventId);
+
+            $errorMessage = '';
+
+            // Event has to be pending
+            if($event->getState() !== 'pending') {
+                $errorMessage = 'The event is already confirmed or cancelled';
+            }
+
+            // Event has to be in the future
+            if($event->getDateStart() <= new DateTime('now')) {
+                $errorMessage = 'The event has already passed';
+            }
+
+            // And seats available
+            if(
+                ($user->getGender() === 'male' && $event->getNumMenRegistered() === $event->getMenSeats()) OR
+                ($user->getGender() === 'female' && $event->getNumWomenRegistered() === $event->getWomenSeats())
+            ) {
+                $errorMessage = 'No more seats available for this event';
+            }
+
+            // And the user in the age range
+            $age = DateTime::createFromFormat('d/m/Y', $user->getBirthDate()->format('d/m/Y'))
+                ->diff(new DateTime('now'))
+                ->y;
+
+            if($age < $event->getMinAge() || $age > $event->getMaxAge()) {
+                $errorMessage = 'You are not in the age range of this Event. The age range is: '
+                    .$event->getMinAge().' - '.$event->getMaxAge().' and you are '.$age;
+            }
+
+            // And has to enter his address
+            if($user->getAddress() === null) {
+                $errorMessage = 'Please enter your address before registering to an event';
+            }
+
+            // And is not already registered
+            if($event->getParticipants()->contains($user)) {
+                $errorMessage = 'You are already registered to this event';
+            }
+
+            if(!empty($errorMessage)) {
+                return new View($errorMessage, 400);
+            }
+
+            // Everyting okay, we can register the User
+            if($user->getGender() === 'male') {
+                $event->setNumMenRegistered($event->getNumMenRegistered() + 1);
+            }
+            else {
+                $event->setNumWomenRegistered($event->getNumWomenRegistered() + 1);
+            }
+
+            $event->addParticipant($user);
+
+            $registration->setEvent($event);
+            $registration->setUser($user);
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($registration);
             $em->flush();
 
-            return $this->routeRedirectView('get_registration', array('id' => $registration->getId()));
+            // We send the Email
+            $message = \Swift_Message::newInstance()
+                ->setSubject('Swiss Affinity - Event Registration')
+                ->setFrom('no-reply@swissaffinity.dev')
+                ->setTo($user->getEmail())
+                ->setBody(
+                    $this->renderView(
+                        'emails/registration.html.twig'
+                    ),
+                    'text/html'
+                );
+            $this->get('mailer')->send($message);
+
+            return new View(null, 204);
         }
 
-        return array(
-            'form' => $form
-        );
-    }
-
-    /**
-     * Update existing registration from the submitted data or create a new registration.
-     *
-     * @ApiDoc(
-     *   resource = true,
-     *   input = "AppBundle\Form\EventRegistrationType",
-     *   statusCodes = {
-     *     201 = "Returned when a new resource is created",
-     *     204 = "Returned when successful",
-     *     400 = "Returned when the form has errors"
-     *   }
-     * )
-     *
-     * @Annotations\View(
-     *   template="AppBundle:User:editRegistration.html.twig",
-     *   templateVar="form"
-     * )
-     *
-     * @param Request $request the request object
-     * @param string     $id      the registration id
-     *
-     * @return FormTypeInterface|RouteRedirectView
-     *
-     * @throws NotFoundHttpException when note not exist
-     */
-    public function putRegistrationsAction(Request $request, $id)
-    {
-        $registration = $this->getDoctrine()->getRepository('AppBundle:Registration')->find($id);
-
-        if (null === $registration) {
-            $registration = new Registration();
-            $statusCode = Response::HTTP_CREATED;
-        } else {
-            $statusCode = Response::HTTP_NO_CONTENT;
-        }
-
-        $form = $this->createForm(new EventRegistrationType(), $registration);
-
-        $form->submit($request);
-        if ($form->isValid()) {
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($registration);
-            $em->flush();
-
-            return $this->routeRedirectView('get_registration', array('id' => $registration->getId()), $statusCode);
-        }
-
-        return $form;
+        return new View(array('form' => $form));
     }
 
     /**
@@ -180,6 +217,8 @@ class RegistrationController extends FOSRestController
      * @ApiDoc(
      *   resource = true,
      *   statusCodes={
+     *     400="Returned when an error occured",
+     *     404="Returned when registration not found",
      *     204="Returned when successful"
      *   }
      * )
@@ -188,17 +227,44 @@ class RegistrationController extends FOSRestController
      *
      * @return View
      *
-     * @throws NotFoundHttpException when registration not exist
+     * @throws NotFoundHttpException when registration does not exist
      */
     public function deleteRegistrationsAction($id)
     {
         $registration = $this->getDoctrine()->getRepository('AppBundle:Registration')->find($id);
-        if (null === $registration) {
-            throw $this->createNotFoundException("Registration does not exist.");
+        $errorMessage = '';
+
+        if($registration === null) {
+            throw $this->createNotFoundException('Registration not found');
         }
 
-        $this->getDoctrine()->getManager()->remove($registration);
+        $event = $registration->getEvent();
 
-        return $this->routeRedirectView('get_users', array(), Response::HTTP_NO_CONTENT);
+        if($event->getState() !== 'pending') {
+            $errorMessage = 'You cannot unregister from a confirmed or cancelled event.';
+        }
+
+        if(!empty($errorMessage)) {
+            $view = new View($errorMessage);
+            $view->setStatusCode(400);
+
+            return $view;
+        }
+
+        // Everything okay, we can delete
+        $user = $registration->getUser();
+
+        $event->removeParticipant($user);
+
+        if($user->getGender() === 'male') {
+            $event->setNumMenRegistered($event->getNumMenRegistered() - 1);
+        }
+        else {
+            $event->setNumWomenRegistered($event->getNumWomenRegistered() - 1);
+        }
+
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($registration);
+        $em->flush();
     }
 }

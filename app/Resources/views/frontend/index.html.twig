@@ -1,20 +1,55 @@
 {% extends 'base.html.twig' %}
 
-{% block stylesheets %}
-{% endblock %}
+{% block main_container %}
+    <section class="fullscreen image-bg parallax background-multiply">
+        <div class="background-image-holder">
+            <img alt="Background" class="background-image" src="{{ asset('frontend/img/dating-background.jpg') }}">
+        </div>
+        <div class="container v-align-transform">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h1 class="thin mb0 bold text-center">Come and meet people with<br>Swiss Affinity</h1>
+                </div>
+            </div>
 
-{% block body %}
-    {% if app.user is not null and is_granted('ROLE_USER') %}
-        <h1>All upcoming events</h1>
-        {% for event in events %}
-            <h3>{{ event.name }} : <a href="">Register !</a></h3>
-            {% if event.imagePath is defined and event.imagePath %}
-                <img src="{{ asset('images/events/' ~ event.imagePath) }}" alt="Event image" height="300px">
-            {% endif %}
-        {% endfor %}
-    {% else %}
-        <h1>Bienvenue sur Swiss Affinity Backend !</h1>
-        <a href="{{ path('fos_user_security_login') }}">Connectez-vous</a><br>
-        <a href="{{ path('fos_user_registration_register') }}"> Ou Créez un compte</a>
-    {% endif %}
+        </div>
+
+        <div class="align-bottom text-center">
+            <a class="btn btn-white mb32" href="#">See next Events</a>
+        </div>
+    </section>
+
+    <section class="bg-dark pb0 pt40">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 text-center">
+                    <h3 class="uppercase color-primary mb40 mb-xs-24">All our next events</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-secondary">
+        <div class="container">
+            {% for event in events %}
+                <div class="row v-align-children mb64">
+                    <div class="col-md-7 col-md-offset-1 col-sm-6 col-sm-offset-1 text-center">
+                        <img src="{{ asset('images/events/' ~ event.imagePath) }}" alt="{{ event.name }}">
+                    </div>
+                    <div class="col-md-8 col-sm-5 mb-xs-24">
+                        <h3>{{ event.name }}</h3>
+                        <h4>
+                            <i class="fa fa-home"></i> {{ event.location.name }}
+                            <i class="fa fa-time"></i> {{ event.dateStart|localizeddate('medium', 'short') }}
+                        </h4>
+                        <h5>{{ event.minAge }} - {{ event.maxAge}} years old</h5>
+                        <p>
+                            {{ event.description }}
+                        </p>
+                        <p class="text-center"><a class="btn btn-red mb32" href="{{ path('show_event', {'id': event.id}) }}">More details</a></p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
 {% endblock %}

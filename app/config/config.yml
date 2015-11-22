@@ -157,3 +157,9 @@ jms_serializer:
     metadata:
         directories:
             - { path: %kernel.root_dir%/Resources/FOSUserBundle/serializer, namespace_prefix: 'FOS\UserBundle' }
+
+services:
+    twig.extension.intl:
+        class: Twig_Extensions_Extension_Intl
+        tags:
+            - { name: twig.extension }

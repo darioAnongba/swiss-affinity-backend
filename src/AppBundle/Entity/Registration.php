@@ -5,11 +5,14 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
+use JMS\Serializer\Annotation as JMS;
+
 /**
  * Registration
  *
  * @ORM\Table(name="registrations")
  * @ORM\Entity()
+ * @ORM\HasLifecycleCallbacks()
  */
 class Registration
 {
@@ -33,16 +36,9 @@ class Registration
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="User")
+     * @JMS\Exclude()
      */
     private $user;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="price", type="decimal", scale=2, precision=5)
-     * @Assert\NotNull()
-     */
-    private $price;
 
     /**
      * @var \DateTime
@@ -65,12 +61,25 @@ class Registration
      * @var Confirmation
      *
      * @ORM\OneToOne(targetEntity="Confirmation", cascade={"remove"})
+     *
+     * @JMS\Exclude()
      */
     private $confirmation;
 
-    public function __construct()
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="state", type="string", length=10)
+     * @Assert\Choice(choices={"pending", "confirmed", "cancelled", "deleted"}, message = "Choose a valid status.")
+     */
+    private $state;
+
+    public function __construct(Event $event = null, User $user = null)
     {
-        $this->date = new \DateTime();
+        $this->date = new \DateTime('now');
+        $this->state = 'pending';
+        $this->event = $event;
+        $this->user = $user;
     }
 
     /**
@@ -84,27 +93,13 @@ class Registration
     }
 
     /**
-     * Set price
-     *
-     * @param string $price
-     *
-     * @return Registration
-     */
-    public function setPrice($price)
-    {
-        $this->price = $price;
-
-        return $this;
-    }
-
-    /**
      * Get price
      *
      * @return string
      */
     public function getPrice()
     {
-        return $this->price;
+        return $this->event->getBasePrice();
     }
 
     /**
@@ -134,15 +129,13 @@ class Registration
     /**
      * Set modifiedAt
      *
-     * @param \DateTime $modifiedAt
-     *
      * @return Registration
+     *
+     * @ORM\PreUpdate()
      */
-    public function setModifiedAt($modifiedAt)
+    public function setModifiedAt()
     {
-        $this->modifiedAt = $modifiedAt;
-
-        return $this;
+        $this->modifiedAt = new \DateTime('now');
     }
 
     /**
@@ -225,5 +218,33 @@ class Registration
     public function getConfirmation()
     {
         return $this->confirmation;
+    }
+
+    /**
+     * Set state
+     *
+     * @param string $state
+     *
+     * @return Event
+     */
+    public function setState($state)
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * Get state
+     *
+     * @return string
+     */
+    public function getState()
+    {
+        return $this->state;
+    }
+
+    public static function getStates() {
+        return array('pending' => 'Pending', 'confirmed' => 'Confirmed', 'cancelled' => 'Cancelled');
     }
 }

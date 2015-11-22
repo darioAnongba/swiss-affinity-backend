@@ -43,3 +43,9 @@ services:
           arguments: [~, AppBundle\Entity\UserCategory, ~]
           tags:
               - { name: sonata.admin, manager_type: orm, group: Users, label: User categories }
+
+    admin.registrations:
+          class: AppBundle\Admin\RegistrationAdmin
+          arguments: [~, AppBundle\Entity\Registration, AppBundle:RegistrationAdmin]
+          tags:
+              - { name: sonata.admin, manager_type: orm, group: Registrations, label: Registrations }

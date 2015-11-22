@@ -34,7 +34,7 @@ class EventController extends FOSRestController
     public function getEventsAction()
     {
         $events = $this->getDoctrine()->getRepository('AppBundle:Event')
-            ->findBy(array(), array('dateStart' => 'DESC'));
+            ->findNext();
 
         return new View($events);
     }
@@ -54,8 +54,7 @@ class EventController extends FOSRestController
      *
      * @param int $id The event id
      *
-     * @return array
-     *
+     * @return View
      * @throws NotFoundHttpException when the event does not exist
      */
     public function getEventAction($id)

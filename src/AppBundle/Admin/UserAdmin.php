@@ -66,12 +66,6 @@ class UserAdmin extends Admin
                     'multiple' => true,
                     'required' => false
                 ))
-                ->add('eventsAttended', 'entity', array(
-                    'class' => 'AppBundle\Entity\Event',
-                    'property' => 'name',
-                    'multiple' => true,
-                    'required' => false
-                ))
             ->end()
             ->with('Administration', array('class' => 'col-md-3'))
                 ->add('categories', 'entity', array(

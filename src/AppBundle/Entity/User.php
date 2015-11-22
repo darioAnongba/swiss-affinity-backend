@@ -136,16 +136,6 @@ class User extends BaseUser
     protected $locationsOfInterest;
 
     /**
-     * @var ArrayCollection
-     *
-     * @ORM\ManyToMany(targetEntity="Event")
-     * @ORM\OrderBy({"dateStart" = "DESC"})
-     *
-     * @JMS\Exclude()
-     */
-    protected $eventsAttended;
-
-    /**
      * @var Address
      *
      * @ORM\OneToOne(targetEntity="Address", cascade={"persist", "remove"})
@@ -191,7 +181,6 @@ class User extends BaseUser
         parent::__construct();
 
         $this->locationsOfInterest = new ArrayCollection();
-        $this->eventsAttended = new ArrayCollection();
         $this->categories = new ArrayCollection();
     }
 
@@ -264,7 +253,7 @@ class User extends BaseUser
         return $this->firstName;
     }
 
-    public function fullName()
+    public function getFullName()
     {
         return $this->getFirstName().' '.$this->getLastName();
     }
@@ -483,40 +472,6 @@ class User extends BaseUser
     public function getLocationsOfInterest()
     {
         return $this->locationsOfInterest;
-    }
-
-    /**
-     * Add eventsAttended
-     *
-     * @param \AppBundle\Entity\Event $eventsAttended
-     *
-     * @return User
-     */
-    public function addEventsAttended(Event $eventsAttended)
-    {
-        $this->eventsAttended[] = $eventsAttended;
-
-        return $this;
-    }
-
-    /**
-     * Remove eventsAttended
-     *
-     * @param \AppBundle\Entity\Event $eventsAttended
-     */
-    public function removeEventsAttended(Event $eventsAttended)
-    {
-        $this->eventsAttended->removeElement($eventsAttended);
-    }
-
-    /**
-     * Get eventsAttended
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getEventsAttended()
-    {
-        return $this->eventsAttended;
     }
 
     /**

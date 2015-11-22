@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ parent() }} - {{ event.name }}{% endblock %}
+
+{% block main_container %}
+    <section class="page-title page-title-4 bg-secondary">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <h3 class="uppercase mb0"><strong>{{ event.name }}</strong></h3>
+                </div>
+                <div class="col-md-5 text-right">
+                    <ol class="breadcrumb breadcrumb-2">
+                        <li>
+                            <a href="{{ path('homepage') }}">Home</a>
+                        </li>
+                        <li>
+                            <a href="#">Events</a>
+                        </li>
+                        <li class="active">{{ event.name }}</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section style="padding-bottom: 10px; padding-top: 0;">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1">
+                    <div class="post-snippet mb64">
+                        <img src="{{ asset('images/events/' ~ event.imagePath) }}" alt="{{ event.name }}">
+                        <div class="post-title">
+                            <span class="label">{{ event.dateStart|localizeddate('long', 'short') }}</span>
+                            <h4 class="inline-block">{{ event.name }}</h4>
+                        </div>
+                        <ul class="post-meta">
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <span><a href="#">{{ event.location.name }}</a></span>
+                            </li>
+                            <li>
+                                <i class="fa fa-tag"></i>
+                                <span><a href="#">Speed Dating</a></span>
+                            </li>
+                            <li>
+                                <span>{{ event.minAge }} - {{ event.maxAge}} years old</span>
+                            </li>
+                            <li>
+                                <i class="fa fa-user-times"></i>
+                                <span>{{ event.maxPeople }} people max</span>
+                            </li>
+                            <li>
+                                <i class="fa fa-mars"></i>
+                                <span>{{ event.menSeats - event.numMenRegistered }} still available</span>
+                            </li>
+                            <li>
+                                <i class="fa fa-venus"></i>
+                                <span>{{ event.womenSeats - event.numWomenRegistered }} still available</span>
+                            </li>
+                        </ul>
+                        <hr>
+                        <blockquote>
+                            {{ event.description|raw }}
+                        </blockquote>
+                        {% if isRegistered %}
+                            <p class="text-center mb0">You are already registered to this event</p>
+                        {% elseif is_granted('ROLE_USER') %}
+                            <p class="text-center mb0"><a class="btn btn-red mb0" href="{{ path('new_event_registration', {'id': event.id}) }}">Register</a></p>
+                        {% else %}
+                            <p class="text-center mb0"><a class="btn btn-red mb0" href="{{ path('fos_user_registration_register') }}">Create an account to register</a></p>
+                            <p class="text-center mb0"><a class="btn btn-red mb0" href="{{ path('fos_user_security_login') }}">Or Login</a></p>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+{% endblock %}
