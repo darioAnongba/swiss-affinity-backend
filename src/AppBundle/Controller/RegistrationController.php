@@ -117,7 +117,7 @@ class RegistrationController extends FOSRestController
      *
      * @return FormTypeInterface[]|View
      */
-    public function postRegistrationsAction(Request $request)
+    public function postUserRegistrationsAction(Request $request)
     {
         $registration = new Registration();
 
@@ -130,6 +130,10 @@ class RegistrationController extends FOSRestController
 
             $user = $this->getDoctrine()->getRepository("AppBundle:User")->findOneBy(array('username' => $username));
             $event = $this->getDoctrine()->getRepository("AppBundle:Event")->find($eventId);
+
+            if($user === null OR $event === null) {
+                throw $this->createNotFoundException('Event or User not found');
+            }
 
             $errorMessage = '';
 
