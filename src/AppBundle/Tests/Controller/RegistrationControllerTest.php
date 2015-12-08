@@ -4,7 +4,7 @@ namespace AppBundle\Tests\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class EventControllerTest extends WebTestCase
+class RegistrationControllerTest extends WebTestCase
 {
     private $repo;
 
@@ -73,32 +73,36 @@ class EventControllerTest extends WebTestCase
     {
         $client = static::createClient();
         $client->request('POST',
-            'api/users/registrations/',
+            '/api/users/registrations',
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
             '{"rest_event_registration":{"username":"Admin","eventId":"9"}}');
 
         $this->jsonContentType($client);
-
         $this->assertCode($client, 400);
-        $this->assertEquals('You are already registered to this event', $client->getResponse()->getContent(), "Post Registration for Admin already registered: Content not equal");
+        $this->assertEquals(
+            '"You are already registered to this event"',
+            $client->getResponse()->getContent(),
+            "Post Registration for Admin already registered");
     }
 
     public function testPostUserRegistrationsAG()
     {
         $client = static::createClient();
         $client->request('POST',
-            'api/users/registrations/',
+            '/api/users/registrations',
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
             '{"rest_event_registration":{"username":"Admin","eventId":"4"}}');
 
         $this->jsonContentType($client);
-
         $this->assertCode($client, 400);
-        $this->assertEquals("You are not in the age range of this Event. The age range is: 25 - 45 and you are 22", $client->getResponse()->getContent(), "Post Registration for Admin age range: Content not equal");
+        $this->assertEquals(
+            '"You are not in the age range of this Event. The age range is: 25 - 45 and you are 22"',
+            $client->getResponse()->getContent(),
+            "Post Registration for Admin age range invalid");
     }
 
     public function testDeleteUserRegistrations404()

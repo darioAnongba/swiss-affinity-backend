@@ -47,8 +47,6 @@ class LocationControllerTest extends WebTestCase
 
         $this->assertContains('Xmas Dating', $client->getResponse()->getContent(), "Get Events : Content not equal");
         $this->assertContains('Let\'s diner Meeting', $client->getResponse()->getContent(), "Get Events : Content not equal");
-        $this->assertContains('First Speed Dating Event !', $client->getResponse()->getContent(), "Get Events : Content not equal");
-        $this->assertContains('Speed dating', $client->getResponse()->getContent(), "Get Events : Content not equal");
     }
 
     public function testGetLocationEvents404()

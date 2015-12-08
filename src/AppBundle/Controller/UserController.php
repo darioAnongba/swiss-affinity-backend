@@ -238,31 +238,4 @@ class UserController extends FOSRestController
 
         return new View($user->getLocationsOfInterest());
     }
-
-    /**
-     * List all events a User has attented (Registrations that were confirmed).
-     *
-     * @ApiDoc(
-     *   resource = true,
-     *   statusCodes={
-     *     200 = "Returned when successful",
-     *     404 = "Returned when the user is not found"
-     *   }
-     * )
-     *
-     * @Annotations\View(templateVar="locations")
-     *
-     * @param integer $username   The user's username
-     * @return array
-     *
-     * @throws NotFoundHttpException when user not exist
-     */
-    public function getUserEventsAction($username)
-    {
-        $user = $this->get('fos_user.user_manager')->findUserByUsernameOrEmail($username);
-
-        if(null === $user) throw $this->createNotFoundException("User not found");
-
-        return new View($user->getEventsAttended());
-    }
 }

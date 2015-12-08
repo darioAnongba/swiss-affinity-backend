@@ -104,26 +104,6 @@ class UserControllerTest extends WebTestCase
         $this->assertCode($client, 404);
     }
 
-    public function testGetUserEvents()
-    {
-        $client = static::createClient();
-        $client->request('GET', '/api/users/Admin/events');
-
-        $this->jsonContentType($client);
-        $this->assertCode($client, 200);
-
-        $this->assertContains('"name":"Let\'s celebrate Oktoberfest"', $client->getResponse()->getContent(), "Get User events : Content not equal");
-    }
-
-    public function testGetUserEvents404()
-    {
-        $client = static::createClient();
-        $client->request('GET', '/api/users/errorUsername/events');
-
-        $this->jsonContentType($client);
-        $this->assertCode($client, 404);
-    }
-
     private function jsonContentType($client) {
         $this->assertTrue($client->getResponse()->headers->contains(
             'Content-Type',
