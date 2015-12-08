@@ -12,8 +12,19 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class ProfileFormType
+ *
+ * @package AppBundle\Form
+ */
 class ProfileFormType extends AbstractType
 {
+    /**
+     * @inheritdoc
+     *
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('lastName')
@@ -21,6 +32,11 @@ class ProfileFormType extends AbstractType
             ->add('mobilePhone');
     }
 
+    /**
+     * @inheritdoc
+     *
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
@@ -28,14 +44,20 @@ class ProfileFormType extends AbstractType
         ));
     }
 
+    /**
+     * @inheritdoc
+     *
+     * @return string
+     */
     public function getParent()
     {
         return 'fos_user_profile';
     }
+
     /**
-     * Returns the name of this type.
+     * @inheritdoc
      *
-     * @return string The name of this type
+     * @return string
      */
     public function getName()
     {

@@ -1,0 +1,34 @@
+{% extends "base.html.twig" %}
+
+{% trans_default_domain 'FOSUserBundle' %}
+
+{% block main_container %}
+    <section class="cover fullscreen image-bg overlay">
+        <div class="background-image-holder">
+            <img alt="image" class="background-image" src="{{ asset('frontend/img/dating-background.jpg') }}" />
+        </div>
+        <div class="container v-align-transform">
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4 col-sm-8 col-sm-offset-2">
+                    <div class="feature bordered text-center">
+                        <h4 class="uppercase">Login Here</h4>
+                        {% if error %}
+                            <p>{{ error.messageKey|trans(error.messageData, 'security') }}</p>
+                        {% endif %}
+                        <form action="{{ path("fos_user_security_check") }}" method="post" class="text-left">
+                            <input type="text" id="username" name="_username" value="{{ last_username }}" required="required" placeholder="{{ 'security.login.username'|trans }}"/>
+                            <input type="password" id="password" name="_password" required="required" placeholder="{{ 'security.login.password'|trans }}"/>
+                            <input type="checkbox" id="remember_me" name="_remember_me" value="on" />
+                            <label style="color: #fff;" for="remember_me">{{ 'security.login.remember_me'|trans }}</label>
+                            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+                            <input type="submit" id="_submit" name="_submit" value="{{ 'security.login.submit'|trans }}" />
+                        </form>
+                        <p class="mb0">Forgot your password?
+                            <a href="{{ path('fos_user_resetting_request') }}">Click Here To Reset</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

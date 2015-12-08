@@ -34,7 +34,7 @@ class Establishment
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * @Assert\NotBlank(message="Nom invalide : vide")
+     * @Assert\NotBlank(message="Invalid name : empty")
      */
     private $name;
 
@@ -61,7 +61,7 @@ class Establishment
      * @ORM\Column(name="type", type="string", length=255)
      * @Assert\Choice(
      *      choices={"bar", "restaurant", "hotel"},
-     *      message = "Choisissez un type valide.")
+     *      message = "Choose a valid type")
      */
     private $type;
 

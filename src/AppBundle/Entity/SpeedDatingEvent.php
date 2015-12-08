@@ -73,7 +73,7 @@ class SpeedDatingEvent extends Event
     private $establishment;
 
     /**
-     * Creates a new Event
+     * SpeedDatingEvent constructor.
      */
     public function __construct()
     {

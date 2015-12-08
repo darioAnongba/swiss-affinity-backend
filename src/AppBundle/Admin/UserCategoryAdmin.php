@@ -16,21 +16,33 @@ use Sonata\AdminBundle\Form\FormMapper;
 
 class UserCategoryAdmin extends Admin
 {
+    /**
+     * @inheritdoc
+     */
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper->add('name');
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper->add('name');
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper->addIdentifier('name');
     }
 
+    /**
+     * @inheritdoc
+     */
     public function toString($object)
     {
         return $object instanceof UserCategory

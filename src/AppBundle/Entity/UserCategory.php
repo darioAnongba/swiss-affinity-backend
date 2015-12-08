@@ -26,7 +26,7 @@ class UserCategory
      * @var string
      *
      * @ORM\Column(name="name", type="string", length=255)
-     * @Assert\NotBlank(message="Nom invalide : vide")
+     * @Assert\NotBlank(message="Name invalid : empty")
      */
     private $name;
 
@@ -65,6 +65,11 @@ class UserCategory
         return $this->name;
     }
 
+    /**
+     * @inheritdoc
+     *
+     * @return string
+     */
     public function __toString() {
         return $this->getName();
     }

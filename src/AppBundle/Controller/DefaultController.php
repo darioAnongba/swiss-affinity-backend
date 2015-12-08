@@ -13,6 +13,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class DefaultController extends Controller
 {
     /**
+     * Show the homepage
+     *
      * @Route("/", name="homepage")
      */
     public function indexAction()
@@ -26,6 +28,8 @@ class DefaultController extends Controller
     }
 
     /**
+     * Show a specific event
+     *
      * @Route("/event/{id}", name="show_event")
      */
     public function showEventAction(Event $event)
@@ -42,6 +46,8 @@ class DefaultController extends Controller
     }
 
     /**
+     * Register to an event via click on link
+     *
      * @Route("/registration/new/{id}", name="new_event_registration")
      * @Security("has_role('ROLE_USER')")
      */

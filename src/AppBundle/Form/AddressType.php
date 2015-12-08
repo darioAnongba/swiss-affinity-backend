@@ -12,8 +12,19 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class AddressType
+ *
+ * @package AppBundle\Form
+ */
 class AddressType extends AbstractType
 {
+    /**
+     * @inheritdoc
+     *
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('street')
@@ -27,6 +38,11 @@ class AddressType extends AbstractType
             ));
     }
 
+    /**
+     * @inheritdoc
+     *
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
@@ -36,6 +52,11 @@ class AddressType extends AbstractType
         ));
     }
 
+    /**
+     * @inheritdoc
+     *
+     * @return string
+     */
     public function getName()
     {
         return 'address';

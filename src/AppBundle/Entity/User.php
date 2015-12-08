@@ -52,9 +52,9 @@ class User extends BaseUser
      * @var string
      *
      * @ORM\Column(name="last_name", type="string", length=255)
-     * @Assert\NotBlank(message="Nom invalide : vide", groups={"Registration", "Profile"})
+     * @Assert\NotBlank(message="last name invalid : empty", groups={"Registration", "Profile"})
      * @Assert\Regex(
-     *        message="Nom invalide, max 50 caract., lettres uniquement",
+     *        message="Last name invalid, max 50 caract., only letters",
      *        pattern="/^[a-zA-Z\s]{2,50}/",
      *        groups={"Registration", "Profile"}
      * )
@@ -65,9 +65,9 @@ class User extends BaseUser
      * @var string
      *
      * @ORM\Column(name="first_name", type="string", length=255)
-     * @Assert\NotBlank(message="Prénom invalide : vide", groups={"Registration", "Profile"})
+     * @Assert\NotBlank(message="First name invalid : empty", groups={"Registration", "Profile"})
      * @Assert\Regex(
-     *        message="Prénom invalide, max 50 caract., lettres uniquement",
+     *        message="Prénom invalide, max 50 caract., only letters",
      *        pattern="/^[a-zA-Z]{2,50}/",
      *        groups={"Registration", "Profile"})
      */
@@ -78,7 +78,7 @@ class User extends BaseUser
      *
      * @ORM\Column(name="mobile_phone", type="string", length=18, nullable=true)
      * @Assert\Regex(
-     *        message="Téléphone portable invalide",
+     *        message="mobile phone invalid",
      *        pattern="/^[+0-9\s]{10,18}/",
      *        groups={"Registration", "Profile"})
      */
@@ -89,7 +89,7 @@ class User extends BaseUser
      *
      * @ORM\Column(name="home_phone", type="string", length=18, nullable=TRUE)
      * @Assert\Regex(
-     *        message="Téléphone fixe invalide",
+     *        message="Home phone invalid",
      *        pattern="/^[+0-9\s]{10,18}/",
      *        groups={"Profile"})
      */
@@ -99,10 +99,10 @@ class User extends BaseUser
      * @var string
      *
      * @ORM\Column(name="gender", type="string", length=10)
-     * @Assert\NotBlank(message="Sexe invalide : vide", groups={"Registration", "Profile"})
+     * @Assert\NotBlank(message="Gender invalid : empty", groups={"Registration", "Profile"})
      * @Assert\Choice(
      *      choices = {"male", "female"},
-     *      message = "Le choix du sexe n'est pas valide.",
+     *      message = "Choose a valid gender",
      *      groups={"Registration", "Profile"})
      */
     protected $gender;
@@ -111,8 +111,8 @@ class User extends BaseUser
      * @var \DateTime
      *
      * @ORM\Column(name="birth_date", type="date")
-     * @Assert\NotBlank(message="Date de naissance invalide : vide", groups={"Registration", "Profile"})
-     * @Assert\Date(message="Cette valeur n'est pas une date valide.", groups={"Registration", "Profile"})
+     * @Assert\NotBlank(message="Birth date invalid: empty", groups={"Registration", "Profile"})
+     * @Assert\Date(message="Invalid birthdate", groups={"Registration", "Profile"})
      */
     protected $birthDate;
 
@@ -121,7 +121,7 @@ class User extends BaseUser
      *
      * @ORM\Column(name="profession", type="string", length=255, nullable=true)
      * @Assert\Regex(
-     *        message="Prénom invalide, max 50 caract., lettres uniquement",
+     *        message="Profession invalid, max 100 caract., only letters",
      *        pattern="/^[a-zA-Z]{2,100}/",
      *        groups={"Profile"})
      */
@@ -172,9 +172,9 @@ class User extends BaseUser
      * @var \DateTime
      */
     private $updatedAt;
-    
+
     /**
-     * Creates a new User
+     * User constructor.
      */
     public function __construct()
     {
@@ -539,6 +539,8 @@ class User extends BaseUser
     }
 
     /**
+     * Get the file of the image
+     *
      * @return File
      */
     public function getImageFile()

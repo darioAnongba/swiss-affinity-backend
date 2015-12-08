@@ -14,8 +14,19 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class EventRegistrationType
+ *
+ * @package AppBundle\Form
+ */
 class EventRegistrationType extends AbstractType
 {
+    /**
+     * @inheritdoc
+     *
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -38,6 +49,11 @@ class EventRegistrationType extends AbstractType
         ));
     }
 
+    /**
+     * @inheritdoc
+     *
+     * @return string
+     */
     public function getName()
     {
         return 'rest_event_registration';

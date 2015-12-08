@@ -12,6 +12,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class RESTRegistrationType
+ *
+ * @package AppBundle\Form
+ */
 class RESTRegistrationType extends AbstractType
 {
     /**

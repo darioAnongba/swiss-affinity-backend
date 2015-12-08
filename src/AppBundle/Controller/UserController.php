@@ -9,15 +9,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\User;
-use AppBundle\Form\RegistrationType;
-use AppBundle\Form\RESTRegistrationFacebookType;
 use AppBundle\Form\RESTRegistrationType;
-use AppBundle\Form\TestType;
-use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
-use Exporter\Exception\InvalidDataFormatException;
-use Fixtures\Bundles\AnnotationsBundle\Entity\Test;
-use FOS\RestBundle\EventListener\ParamFetcherListener;
-use FOS\RestBundle\Request\ParamFetcherInterface;
 use FOS\RestBundle\View\RouteRedirectView;
 use FOS\RestBundle\View\View;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
@@ -25,7 +17,6 @@ use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\Controller\Annotations;
 
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

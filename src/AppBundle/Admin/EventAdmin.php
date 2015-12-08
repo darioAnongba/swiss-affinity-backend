@@ -17,6 +17,9 @@ use Sonata\AdminBundle\Show\ShowMapper;
 
 class EventAdmin extends Admin
 {
+    /**
+     * @inheritdoc
+     */
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
@@ -33,6 +36,9 @@ class EventAdmin extends Admin
             ->end();
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
@@ -74,6 +80,9 @@ class EventAdmin extends Admin
             ->end();
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
@@ -88,6 +97,9 @@ class EventAdmin extends Admin
             ->add('establishment');
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper->addIdentifier('name')
@@ -106,6 +118,9 @@ class EventAdmin extends Admin
             ));
     }
 
+    /**
+     * @inheritdoc
+     */
     public function toString($object)
     {
         return $object instanceof Event

@@ -18,6 +18,9 @@ use Sonata\AdminBundle\Show\ShowMapper;
 
 class UserAdmin extends Admin
 {
+    /**
+     * @inheritdoc
+     */
     protected function configureShowFields(ShowMapper $showMapper)
     {
         $showMapper
@@ -34,6 +37,9 @@ class UserAdmin extends Admin
             ->end();
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
@@ -90,6 +96,9 @@ class UserAdmin extends Admin
             ->end();
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper->add('firstName')
@@ -101,6 +110,9 @@ class UserAdmin extends Admin
             ));
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper->addIdentifier('username')
@@ -120,6 +132,9 @@ class UserAdmin extends Admin
             ));
     }
 
+    /**
+     * @inheritdoc
+     */
     public function toString($object)
     {
         return $object instanceof User

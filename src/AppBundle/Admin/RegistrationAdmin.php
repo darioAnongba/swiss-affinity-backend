@@ -19,14 +19,17 @@ use Sonata\AdminBundle\Show\ShowMapper;
 
 class RegistrationAdmin extends Admin
 {
+    /**
+     * @inheritdoc
+     */
     protected function configureRoutes(RouteCollection $collection)
     {
         $collection->remove('create');
     }
 
-    protected function configureShowFields(ShowMapper $showMapper)
-    {}
-
+    /**
+     * @inheritdoc
+     */
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
@@ -49,6 +52,9 @@ class RegistrationAdmin extends Admin
             ->end();
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function configureDatagridFilters(DatagridMapper $datagridMapper)
     {
         $datagridMapper
@@ -66,6 +72,9 @@ class RegistrationAdmin extends Admin
             ));
     }
 
+    /**
+     * @inheritdoc
+     */
     protected function configureListFields(ListMapper $listMapper)
     {
         $listMapper->addIdentifier('user.fullName')
@@ -74,12 +83,14 @@ class RegistrationAdmin extends Admin
             ->add('state')
             ->add('_action', 'actions', array(
                 'actions' => array(
-                    'show' => array(),
                     'delete' => array()
                 )
             ));
     }
 
+    /**
+     * @inheritdoc
+     */
     public function toString($object)
     {
         return $object instanceof Event
@@ -87,6 +98,9 @@ class RegistrationAdmin extends Admin
             : 'New Registration'; // shown in the breadcrumb on the create view
     }
 
+    /**
+     * @inheritdoc
+     */
     public function getBatchActions()
     {
         $actions = parent::getBatchActions();

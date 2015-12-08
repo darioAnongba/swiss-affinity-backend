@@ -26,7 +26,7 @@ class Address
      * @var string
      *
      * @ORM\Column(name="street", type="string", length=255)
-     * @Assert\NotBlank(message="Rue invalide : vide")
+     * @Assert\NotBlank(message="Invalid street : empty")
      */
     private $street;
 
@@ -34,7 +34,7 @@ class Address
      * @var integer
      *
      * @ORM\Column(name="street_number", type="integer")
-     * @Assert\NotBlank(message="NuméroS invalide : vide")
+     * @Assert\NotBlank(message="Number invalid : empty")
      *
      */
     private $streetNumber;
@@ -50,7 +50,7 @@ class Address
      * @var string
      *
      * @ORM\Column(name="city", type="string", length=255)
-     * @Assert\NotBlank(message="Ville invalide : vide")
+     * @Assert\NotBlank(message="City invalide : empty")
      */
     private $city;
 
@@ -58,7 +58,7 @@ class Address
      * @var integer
      *
      * @ORM\Column(name="zip_code", type="integer")
-     * @Assert\NotBlank(message="code postal invalide : vide")
+     * @Assert\NotBlank(message="zip code invalid : empty")
      */
     private $zipCode;
 
@@ -66,7 +66,7 @@ class Address
      * @var string
      *
      * @ORM\Column(name="country", type="string", length=3)
-     * @Assert\NotBlank(message="Pays invalide : vide")
+     * @Assert\NotBlank(message="Country invalid : empty")
      * @Assert\Country()
      */
     private $country;
@@ -226,6 +226,10 @@ class Address
         return $this->country;
     }
 
+    /**
+     * @inheritdoc
+     * @return string
+     */
     public function __toString() {
         return $this->getStreet().' ' .
         $this->getStreetNumber().', ' .

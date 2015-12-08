@@ -34,7 +34,8 @@
                     {% if is_granted("ROLE_USER") %}
                         <a class="btn btn-sm" href="{{ path('fos_user_security_logout') }}">Logout</a>
                     {% else %}
-                        <a class="btn btn-sm" href="{{ path('fos_user_security_login') }}">Login</a>
+                        <a class="btn btn-sm" href="{{ path('fos_user_security_login') }}">Sign in</a>
+                        <a class="btn btn-sm" href="{{ path('fos_user_registration_register') }}">Sign up</a>
                     {% endif %}
 
                     {% if is_granted("ROLE_ADMIN") %}
@@ -59,9 +60,6 @@
                             <li>
                                 <a href="{{ path('homepage') }}">Home</a>
                             </li>
-                            <li>
-                                <a href="#">Events</a>
-                            </li>
                         </ul>
                     </div>
                     {% block location_selection %}{% endblock %}
@@ -69,14 +67,6 @@
                         <ul class="menu">
                             <li class="has-dropdown">
                                 <a href="#">EN</a>
-                                <ul>
-                                    <li>
-                                        <a href="#">FR</a>
-                                    </li>
-                                    <li>
-                                        <a href="#">DE</a>
-                                    </li>
-                                </ul>
                             </li>
                         </ul>
                     </div>

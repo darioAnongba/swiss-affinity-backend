@@ -11,13 +11,19 @@ namespace AppBundle\Controller;
 use Sonata\AdminBundle\Controller\CRUDController;
 use Sonata\AdminBundle\Datagrid\ProxyQueryInterface;
 use Sonata\AdminBundle\Exception\ModelManagerException;
-use Symfony\Component\HttpFoundation\File\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RegistrationAdminController extends CRUDController
 {
+    /**
+     * Delete a registration
+     *
+     * @param int|null|string $id
+     * @param Request|null $request
+     * @return RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function deleteAction($id, Request $request = null)
     {
         $object  = $this->admin->getObject($id);
@@ -76,67 +82,5 @@ class RegistrationAdminController extends CRUDController
             'action'     => 'delete',
             'csrf_token' => $this->getCsrfToken('sonata.delete'),
         ), null);
-    }
-
-    public function confirmAction($id)
-    {
-        $registration = $this->admin->getSubject();
-
-        if (!$registration) {
-            throw new NotFoundHttpException(sprintf('unable to find the registration'));
-        }
-
-        $registration->setState('confirmed');
-
-        $this->admin->update($registration);
-
-        $user = $registration->getUser();
-        // We send the Email
-        $message = \Swift_Message::newInstance()
-            ->setSubject('Swiss Affinity - Event Confirmation')
-            ->setFrom('no-reply@swissaffinity.dev')
-            ->setTo($user->getEmail())
-            ->setBody(
-                $this->renderView(
-                    'emails/registrationConfirmation.html.twig'
-                ),
-                'text/html'
-            );
-        $this->get('mailer')->send($message);
-
-        $this->addFlash('sonata_flash_success', 'Confirmed successfully');
-
-        return new RedirectResponse($this->admin->generateUrl('list'));
-    }
-
-    public function cancelAction($id)
-    {
-        $registration = $this->admin->getSubject();
-
-        if (!$registration) {
-            throw new NotFoundHttpException(sprintf('unable to find the registration'));
-        }
-
-        $registration->setState('cancelled');
-
-        $this->admin->update($registration);
-
-        $user = $registration->getUser();
-        // We send the Email
-        $message = \Swift_Message::newInstance()
-            ->setSubject('Swiss Affinity - Event registration denied')
-            ->setFrom('no-reply@swissaffinity.dev')
-            ->setTo($user->getEmail())
-            ->setBody(
-                $this->renderView(
-                    'emails/registrationDenied.html.twig'
-                ),
-                'text/html'
-            );
-        $this->get('mailer')->send($message);
-
-        $this->addFlash('sonata_flash_success', 'Cancelled successfully');
-
-        return new RedirectResponse($this->admin->generateUrl('list'));
     }
 }

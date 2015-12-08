@@ -17,6 +17,9 @@ use Sonata\AdminBundle\Show\ShowMapper;
 
 class SpeedDatingEventAdmin extends EventAdmin
 {
+    /**
+     * @inheritdoc
+     */
     protected function configureFormFields(FormMapper $formMapper)
     {
         $formMapper
@@ -32,6 +35,9 @@ class SpeedDatingEventAdmin extends EventAdmin
         parent::configureFormFields($formMapper);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function toString($object)
     {
         return $object instanceof Event

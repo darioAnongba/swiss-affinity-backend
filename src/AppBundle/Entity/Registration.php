@@ -44,8 +44,8 @@ class Registration
      * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime")
-     * @Assert\NotBlank(message="Date invalide : vide")
-     * @Assert\DateTime(message="Entrez une date valide")
+     * @Assert\NotBlank(message="Date invalid : empty")
+     * @Assert\DateTime(message="Invalid date")
      */
     private $date;
 
@@ -53,7 +53,7 @@ class Registration
      * @var \DateTime
      *
      * @ORM\Column(name="modified_at", type="datetime", nullable=true)
-     * @Assert\DateTime(message="Date non valide")
+     * @Assert\DateTime(message="Invalid date")
      */
     private $modifiedAt;
 
@@ -74,6 +74,12 @@ class Registration
      */
     private $state;
 
+    /**
+     * Registration constructor.
+     *
+     * @param Event|null $event
+     * @param User|null $user
+     */
     public function __construct(Event $event = null, User $user = null)
     {
         $this->date = new \DateTime('now');
@@ -244,6 +250,11 @@ class Registration
         return $this->state;
     }
 
+    /**
+     * Get all available states
+     *
+     * @return array
+     */
     public static function getStates() {
         return array('pending' => 'Pending', 'confirmed' => 'Confirmed', 'cancelled' => 'Cancelled');
     }

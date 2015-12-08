@@ -26,7 +26,7 @@ class Confirmation
      * @var string
      *
      * @ORM\Column(name="content", type="text")
-     * @Assert\NotBlank(message="Contenu de la confirmation invalide: vide")
+     * @Assert\NotBlank(message="Invalid content: empty")
      */
     private $content;
 
@@ -34,8 +34,8 @@ class Confirmation
      * @var \DateTime
      *
      * @ORM\Column(name="date", type="datetime")
-     * @Assert\NotBlank(message="Date de la confirmation invalide: vide")
-     * @Assert\DateTime(message="Entrez une date valide")
+     * @Assert\NotBlank(message="Invalid date: empty")
+     * @Assert\DateTime(message="Invalid date")
      */
     private $date;
 
@@ -43,7 +43,7 @@ class Confirmation
      * @var \DateTime
      *
      * @ORM\Column(name="modified_at", type="datetime", nullable=true)
-     * @Assert\DateTime(message="Date non valide")
+     * @Assert\DateTime(message="invalid date")
      */
     private $modifiedAt;
 

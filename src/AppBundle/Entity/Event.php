@@ -108,7 +108,7 @@ abstract class Event
      * @var string
      *
      * @ORM\Column(name="state", type="string", length=10)
-     * @Assert\Choice(choices={"pending", "confirmed", "cancelled"}, message = "Choisissez un état valide.")
+     * @Assert\Choice(choices={"pending", "confirmed", "cancelled"}, message = "Choose a valid state")
      */
     private $state;
 

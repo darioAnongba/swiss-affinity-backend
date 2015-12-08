@@ -12,6 +12,10 @@ use Symfony\Component\Validator\Constraints\DateTime;
  */
 class EventRepository extends EntityRepository
 {
+    /**
+     * Find all events that are to come
+     * @return array
+     */
     public function findNext() {
         $query = $this->createQueryBuilder('p')
             ->where('p.dateStart > :date')
