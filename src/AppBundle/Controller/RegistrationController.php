@@ -165,11 +165,6 @@ class RegistrationController extends FOSRestController
                     .$event->getMinAge().' - '.$event->getMaxAge().' and you are '.$age;
             }
 
-            // And has to enter his address
-            if($user->getAddress() === null) {
-                $errorMessage = 'Please enter your address before registering to an event';
-            }
-
             // And is not already registered
             if($event->getParticipants()->contains($user)) {
                 $errorMessage = 'You are already registered to this event';
