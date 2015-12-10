@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="d9b981e8-b47f-46f4-a79b-adfec6c1b2e2" name="Default" comment="Deleted check if the user has entered his address because we didn't have time to do it in the app">
+    <list default="true" id="d9b981e8-b47f-46f4-a79b-adfec6c1b2e2" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/AppBundle/Controller/RegistrationController.php" afterPath="$PROJECT_DIR$/src/AppBundle/Controller/RegistrationController.php" />
     </list>
     <ignored path="SwissAffinity.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -327,6 +326,13 @@
       <option name="number" value="Default" />
       <updated>1445624193869</updated>
     </task>
+    <task id="LOCAL-00001" summary="Deleted check if the user has entered his address because we didn't have time to do it in the app">
+      <created>1449755240562</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1449755240562</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
